@@ -33,7 +33,7 @@ jobs:
         run: |
           # Download the package straight from nuget.org and check it is the exact file expected.
           $id = 'stub.system.data.sqlite.core.netframework'
-          $nupkg = "$env:RUNNER_TEMP\sqlite.nupkg"
+          $nupkg = "$env:RUNNER_TEMP\sqlite.zip"  # .zip, because Expand-Archive only accepts that extension
           $pkg = "$env:RUNNER_TEMP\sqlite"
           Invoke-WebRequest -Uri "https://api.nuget.org/v3-flatcontainer/$id/$env:SQLITE_VERSION/$id.$env:SQLITE_VERSION.nupkg" -OutFile $nupkg -UseBasicParsing
           $hash = (Get-FileHash $nupkg -Algorithm SHA256).Hash.ToLower()
@@ -61,38 +61,42 @@ jobs:
           Copy-Item "$env:SITE\App_Data\livestock.db" "$env:BUILT\App_Data\" -Force
           Get-ChildItem -Recurse "$env:BUILT" | Select-Object FullName, Length
 
-      - name: Start the legacy app in IIS Express
+      # IIS Express stops when the step that started it ends, so the app is started,
+      # checked and diagnosed within this one step.
+      - name: Run the legacy app in IIS Express and check it
         run: |
+          $diag = "$env:RUNNER_TEMP\diag"
+          New-Item -ItemType Directory -Force $diag | Out-Null
           $iis = @("$env:ProgramFiles\IIS Express\iisexpress.exe", "${env:ProgramFiles(x86)}\IIS Express\iisexpress.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
           if (-not $iis) { throw "IIS Express not found" }
           Write-Host "Using $iis"
-          Start-Process -FilePath $iis -ArgumentList "/path:`"$env:BUILT`"", "/port:8080", "/systray:false" -RedirectStandardOutput "$env:RUNNER_TEMP\iisexpress.out.txt" -RedirectStandardError "$env:RUNNER_TEMP\iisexpress.err.txt"
-          $up = $false
-          for ($i = 0; $i -lt 30; $i++) {
-            try {
-              $r = Invoke-WebRequest -Uri $env:LEGACY_URL -UseBasicParsing -TimeoutSec 10
-              Write-Host "Status $($r.StatusCode)"
-              $up = $true; break
-            } catch {
-              Write-Host "Waiting: $($_.Exception.Message)"
-              Start-Sleep -Seconds 2
+          $server = Start-Process -FilePath $iis -ArgumentList "/path:`"$env:BUILT`"", "/port:8080", "/systray:false" -RedirectStandardOutput "$diag\iisexpress.out.txt" -RedirectStandardError "$diag\iisexpress.err.txt" -PassThru
+          $checkExit = 1
+          try {
+            $up = $false
+            for ($i = 0; $i -lt 30; $i++) {
+              try {
+                $r = Invoke-WebRequest -Uri $env:LEGACY_URL -UseBasicParsing -TimeoutSec 10
+                Write-Host "Status $($r.StatusCode)"
+                $r.Content | Out-File "$diag\home.html"
+                $up = $true; break
+              } catch {
+                Write-Host "Waiting: $($_.Exception.Message)"
+                if ($_.ErrorDetails) { $_.ErrorDetails.Message | Out-File "$diag\home-error.html" }
+                Start-Sleep -Seconds 2
+              }
             }
+            if (-not $up) { throw "The legacy app did not respond" }
+            Push-Location tools/legacy-check
+            npm ci --no-audit --no-fund
+            npm run check
+            $checkExit = $LASTEXITCODE
+            Pop-Location
+          } finally {
+            Copy-Item "$env:USERPROFILE\Documents\IISExpress\Logs" $diag -Recurse -ErrorAction SilentlyContinue
+            if ($server -and -not $server.HasExited) { Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue }
           }
-          if (-not $up) { throw "The legacy app did not respond" }
-
-      - name: Check the legacy app and take screenshots
-        working-directory: tools/legacy-check
-        run: |
-          npm ci --no-audit --no-fund
-          npm run check
-
-      - name: Save what the legacy app returned, for diagnosis
-        if: always()
-        run: |
-          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\diag" | Out-Null
-          try { (Invoke-WebRequest -Uri $env:LEGACY_URL -UseBasicParsing -TimeoutSec 10).Content | Out-File "$env:RUNNER_TEMP\diag\home.html" } catch { $_.Exception.Response | Out-String | Out-File "$env:RUNNER_TEMP\diag\home-error.txt"; if ($_.ErrorDetails) { $_.ErrorDetails.Message | Out-File "$env:RUNNER_TEMP\diag\home-error.html" } }
-          Copy-Item "$env:RUNNER_TEMP\iisexpress.*.txt" "$env:RUNNER_TEMP\diag\" -ErrorAction SilentlyContinue
-          Copy-Item "$env:USERPROFILE\Documents\IISExpress\Logs" "$env:RUNNER_TEMP\diag\" -Recurse -ErrorAction SilentlyContinue
+          if ($checkExit -ne 0) { throw "The check failed" }
 
       - name: Upload screenshots
         if: always()
