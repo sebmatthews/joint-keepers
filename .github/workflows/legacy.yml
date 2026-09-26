@@ -17,6 +17,7 @@ jobs:
     timeout-minutes: 20
     env:
       SQLITE_VERSION: '1.0.119'
+      SQLITE_SHA256: 'f5f86b80729323890da590a8c7ba7957f04e2735e583d075220d1521745e9f4c'
       SITE: legacy\RegisterLivestock
       BUILT: ${{ github.workspace }}\build\legacy
       SCREENS_DIR: ${{ github.workspace }}\build\screens
@@ -30,8 +31,15 @@ jobs:
 
       - name: Fetch the SQLite library for .NET Framework
         run: |
-          nuget install Stub.System.Data.SQLite.Core.NetFramework -Version $env:SQLITE_VERSION -OutputDirectory "$env:RUNNER_TEMP\packages" -NonInteractive
-          $pkg = "$env:RUNNER_TEMP\packages\Stub.System.Data.SQLite.Core.NetFramework.$env:SQLITE_VERSION"
+          # Download the package straight from nuget.org and check it is the exact file expected.
+          $id = 'stub.system.data.sqlite.core.netframework'
+          $nupkg = "$env:RUNNER_TEMP\sqlite.nupkg"
+          $pkg = "$env:RUNNER_TEMP\sqlite"
+          Invoke-WebRequest -Uri "https://api.nuget.org/v3-flatcontainer/$id/$env:SQLITE_VERSION/$id.$env:SQLITE_VERSION.nupkg" -OutFile $nupkg -UseBasicParsing
+          $hash = (Get-FileHash $nupkg -Algorithm SHA256).Hash.ToLower()
+          Write-Host "SHA256 $hash"
+          if ($hash -ne $env:SQLITE_SHA256) { throw "Package fingerprint does not match: expected $env:SQLITE_SHA256" }
+          Expand-Archive -Path $nupkg -DestinationPath $pkg -Force
           New-Item -ItemType Directory -Force "$env:SITE\Bin\x64", "$env:SITE\Bin\x86" | Out-Null
           Copy-Item "$pkg\lib\net46\System.Data.SQLite.dll" "$env:SITE\Bin\"
           Copy-Item "$pkg\build\net46\x64\SQLite.Interop.dll" "$env:SITE\Bin\x64\"
