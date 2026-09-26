@@ -1,0 +1,9 @@
+body { margin: 0; font-family: Verdana, Arial, sans-serif; font-size: 0.8em; background: #e8e8e8; color: #222; }
+#header { background: #334466; color: #fff; padding: 8px 12px; font-weight: bold; font-size: 1.1em; }
+#content { background: #fff; margin: 10px; padding: 10px 16px; border: 1px solid #999; }
+h1 { font-size: 1.6em; color: #334466; margin: 4px 0 10px 0; }
+h2 { font-size: 1.2em; color: #334466; border-bottom: 1px solid #ccc; }
+table.grid { border-collapse: collapse; border: 1px solid #666; }
+table.grid th { background: #ccd4e0; text-align: left; padding: 3px 8px; }
+table.grid td { padding: 3px 8px; }
+#footer { margin: 0 10px 10px 10px; font-size: 0.85em; color: #555; }

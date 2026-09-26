@@ -1,2 +1,6 @@
 .github-token
 .DS_Store
+node_modules/
+build/
+legacy/RegisterLivestock/Bin/
+legacy/RegisterLivestock/App_Data/*.db

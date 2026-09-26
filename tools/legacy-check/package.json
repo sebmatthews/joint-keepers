@@ -1,0 +1,12 @@
+{
+  "name": "legacy-check",
+  "private": true,
+  "description": "Phase 1 check: drives the running legacy app in the installed Chrome, asserts what it shows and takes screenshots.",
+  "type": "module",
+  "scripts": {
+    "check": "node check.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.63.0"
+  }
+}

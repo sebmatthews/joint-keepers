@@ -1,0 +1,103 @@
+# Phase 1: prove a GitHub Windows build machine can compile, run, test and
+# screenshot the legacy VB.NET Web Forms app on SQLite.
+name: Legacy app
+
+on:
+  push:
+    paths:
+      - 'legacy/**'
+      - 'db/**'
+      - 'tools/legacy-check/**'
+      - '.github/workflows/legacy.yml'
+  workflow_dispatch:
+
+jobs:
+  legacy:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    env:
+      SQLITE_VERSION: '1.0.119'
+      SITE: legacy\RegisterLivestock
+      BUILT: ${{ github.workspace }}\build\legacy
+      SCREENS_DIR: ${{ github.workspace }}\build\screens
+      LEGACY_URL: http://localhost:8080/
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fetch the SQLite library for .NET Framework
+        run: |
+          nuget install Stub.System.Data.SQLite.Core.NetFramework -Version $env:SQLITE_VERSION -OutputDirectory "$env:RUNNER_TEMP\packages" -NonInteractive
+          $pkg = "$env:RUNNER_TEMP\packages\Stub.System.Data.SQLite.Core.NetFramework.$env:SQLITE_VERSION"
+          New-Item -ItemType Directory -Force "$env:SITE\Bin\x64", "$env:SITE\Bin\x86" | Out-Null
+          Copy-Item "$pkg\lib\net46\System.Data.SQLite.dll" "$env:SITE\Bin\"
+          Copy-Item "$pkg\build\net46\x64\SQLite.Interop.dll" "$env:SITE\Bin\x64\"
+          Copy-Item "$pkg\build\net46\x86\SQLite.Interop.dll" "$env:SITE\Bin\x86\"
+          Get-ChildItem -Recurse "$env:SITE\Bin" | Select-Object FullName, Length
+
+      - name: Copy the pristine database into the app
+        run: Copy-Item db\livestock.db "$env:SITE\App_Data\livestock.db"
+
+      - name: Compile the legacy app
+        run: |
+          $compiler = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\aspnet_compiler.exe"
+          & $compiler -v / -p "$env:SITE" -u -f -errorstack "$env:BUILT"
+          if ($LASTEXITCODE -ne 0) { throw "aspnet_compiler failed with exit code $LASTEXITCODE" }
+          # Make sure the native SQLite files and the database are in the compiled output.
+          New-Item -ItemType Directory -Force "$env:BUILT\Bin\x64", "$env:BUILT\Bin\x86", "$env:BUILT\App_Data" | Out-Null
+          Copy-Item "$env:SITE\Bin\x64\SQLite.Interop.dll" "$env:BUILT\Bin\x64\" -Force
+          Copy-Item "$env:SITE\Bin\x86\SQLite.Interop.dll" "$env:BUILT\Bin\x86\" -Force
+          Copy-Item "$env:SITE\App_Data\livestock.db" "$env:BUILT\App_Data\" -Force
+          Get-ChildItem -Recurse "$env:BUILT" | Select-Object FullName, Length
+
+      - name: Start the legacy app in IIS Express
+        run: |
+          $iis = @("$env:ProgramFiles\IIS Express\iisexpress.exe", "${env:ProgramFiles(x86)}\IIS Express\iisexpress.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $iis) { throw "IIS Express not found" }
+          Write-Host "Using $iis"
+          Start-Process -FilePath $iis -ArgumentList "/path:`"$env:BUILT`"", "/port:8080", "/systray:false" -RedirectStandardOutput "$env:RUNNER_TEMP\iisexpress.out.txt" -RedirectStandardError "$env:RUNNER_TEMP\iisexpress.err.txt"
+          $up = $false
+          for ($i = 0; $i -lt 30; $i++) {
+            try {
+              $r = Invoke-WebRequest -Uri $env:LEGACY_URL -UseBasicParsing -TimeoutSec 10
+              Write-Host "Status $($r.StatusCode)"
+              $up = $true; break
+            } catch {
+              Write-Host "Waiting: $($_.Exception.Message)"
+              Start-Sleep -Seconds 2
+            }
+          }
+          if (-not $up) { throw "The legacy app did not respond" }
+
+      - name: Check the legacy app and take screenshots
+        working-directory: tools/legacy-check
+        run: |
+          npm ci --no-audit --no-fund
+          npm run check
+
+      - name: Save what the legacy app returned, for diagnosis
+        if: always()
+        run: |
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\diag" | Out-Null
+          try { (Invoke-WebRequest -Uri $env:LEGACY_URL -UseBasicParsing -TimeoutSec 10).Content | Out-File "$env:RUNNER_TEMP\diag\home.html" } catch { $_.Exception.Response | Out-String | Out-File "$env:RUNNER_TEMP\diag\home-error.txt"; if ($_.ErrorDetails) { $_.ErrorDetails.Message | Out-File "$env:RUNNER_TEMP\diag\home-error.html" } }
+          Copy-Item "$env:RUNNER_TEMP\iisexpress.*.txt" "$env:RUNNER_TEMP\diag\" -ErrorAction SilentlyContinue
+          Copy-Item "$env:USERPROFILE\Documents\IISExpress\Logs" "$env:RUNNER_TEMP\diag\" -Recurse -ErrorAction SilentlyContinue
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: legacy-screens
+          path: build/screens
+          if-no-files-found: warn
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: legacy-diagnostics
+          path: ${{ runner.temp }}/diag
+          if-no-files-found: ignore
