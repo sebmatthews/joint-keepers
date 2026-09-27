@@ -1,6 +1,7 @@
 Imports System.Data
 Imports System.Data.SQLite
 Imports System.Configuration
+Imports System.Collections.Generic
 Imports System.Globalization
 Imports System.Text.RegularExpressions
 
@@ -39,18 +40,26 @@ Partial Class HoldingPage
         Dim dt As New DataTable()
         da.Fill(dt)
         conn.Close()
-        ddlKeeper.DataSource = dt
-        ddlKeeper.DataTextField = "Name"
-        ddlKeeper.DataValueField = "KeeperId"
-        ddlKeeper.DataBind()
-        ddlKeeper.Items.Insert(0, New ListItem("-- Select --", ""))
+        BindKeeperList(ddlKeeper, dt)
+        BindKeeperList(ddlKeeper2, dt)
+        BindKeeperList(ddlKeeper3, dt)
+        BindKeeperList(ddlKeeper4, dt)
+    End Sub
+
+    Private Sub BindKeeperList(ByVal list As DropDownList, ByVal keepers As DataTable)
+        list.DataSource = keepers
+        list.DataTextField = "Name"
+        list.DataValueField = "KeeperId"
+        list.DataBind()
+        list.Items.Insert(0, New ListItem("-- Select --", ""))
     End Sub
 
     Private Sub LoadAnimals()
         Dim conn As New SQLiteConnection(ConfigurationManager.ConnectionStrings("Livestock").ConnectionString)
         conn.Open()
         Dim sql As String = "SELECT a.AnimalId, a.TagNumber, a.Species, a.DateOfBirth, k.Name AS KeeperName " & _
-            "FROM Animal a INNER JOIN Keeper k ON k.KeeperId = a.KeeperId " & _
+            "FROM Animal a INNER JOIN AnimalKeeper ak ON ak.AnimalId = a.AnimalId AND ak.IsPrimary = 1 " & _
+            "INNER JOIN Keeper k ON k.KeeperId = ak.KeeperId " & _
             "WHERE a.HoldingId = " & holdingId & " ORDER BY a.TagNumber"
         Dim da As New SQLiteDataAdapter(sql, conn)
         Dim dt As New DataTable()
@@ -94,6 +103,15 @@ Partial Class HoldingPage
             Exit Sub
         End If
 
+        Dim selectedKeepers As String() = {ddlKeeper.SelectedValue, ddlKeeper2.SelectedValue, ddlKeeper3.SelectedValue, ddlKeeper4.SelectedValue}
+        Dim uniqueKeepers As New HashSet(Of String)()
+        For Each keeperId As String In selectedKeepers
+            If keeperId <> "" AndAlso Not uniqueKeepers.Add(keeperId) Then
+                lblMessage.Text = "Select each keeper only once"
+                Exit Sub
+            End If
+        Next
+
         Dim conn As New SQLiteConnection(ConfigurationManager.ConnectionStrings("Livestock").ConnectionString)
         conn.Open()
         Dim check As New SQLiteCommand("SELECT COUNT(*) FROM Animal WHERE TagNumber = '" & tag & "'", conn)
@@ -103,10 +121,23 @@ Partial Class HoldingPage
             Exit Sub
         End If
 
-        Dim sql As String = "INSERT INTO Animal (TagNumber, Species, DateOfBirth, HoldingId, KeeperId) VALUES ('" & _
-            tag & "', '" & ddlSpecies.SelectedValue & "', '" & dob.ToString("yyyy-MM-dd") & "', " & holdingId & ", " & ddlKeeper.SelectedValue & ")"
-        Dim cmd As New SQLiteCommand(sql, conn)
+        Dim transaction As SQLiteTransaction = conn.BeginTransaction()
+        Dim sql As String = "INSERT INTO Animal (TagNumber, Species, DateOfBirth, HoldingId) VALUES ('" & _
+            tag & "', '" & ddlSpecies.SelectedValue & "', '" & dob.ToString("yyyy-MM-dd") & "', " & holdingId & ")"
+        Dim cmd As New SQLiteCommand(sql, conn, transaction)
         cmd.ExecuteNonQuery()
+        Dim idCommand As New SQLiteCommand("SELECT last_insert_rowid()", conn, transaction)
+        Dim animalId As Long = CLng(idCommand.ExecuteScalar())
+        For i As Integer = 0 To selectedKeepers.Length - 1
+            If selectedKeepers(i) <> "" Then
+                Dim isPrimary As Integer = If(i = 0, 1, 0)
+                Dim keeperSql As String = "INSERT INTO AnimalKeeper (AnimalId, KeeperId, IsPrimary, DateAdded) VALUES (" & _
+                    animalId & ", " & selectedKeepers(i) & ", " & isPrimary & ", '" & DateTime.Today.ToString("yyyy-MM-dd") & "')"
+                Dim keeperCommand As New SQLiteCommand(keeperSql, conn, transaction)
+                keeperCommand.ExecuteNonQuery()
+            End If
+        Next
+        transaction.Commit()
         conn.Close()
 
         lblMessage.CssClass = "message success"
@@ -115,6 +146,9 @@ Partial Class HoldingPage
         txtDob.Text = ""
         ddlSpecies.SelectedIndex = 0
         ddlKeeper.SelectedIndex = 0
+        ddlKeeper2.SelectedIndex = 0
+        ddlKeeper3.SelectedIndex = 0
+        ddlKeeper4.SelectedIndex = 0
         LoadAnimals()
     End Sub
 

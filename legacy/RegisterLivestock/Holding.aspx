@@ -28,7 +28,10 @@
                 <asp:ListItem>Goat</asp:ListItem>
             </asp:DropDownList></td></tr>
         <tr><td>Date of birth (DD/MM/YYYY)</td><td><asp:TextBox ID="txtDob" runat="server" /></td></tr>
-        <tr><td>Keeper</td><td><asp:DropDownList ID="ddlKeeper" runat="server" /></td></tr>
+        <tr><td>Primary keeper</td><td><asp:DropDownList ID="ddlKeeper" runat="server" /></td></tr>
+        <tr><td>Additional keeper</td><td><asp:DropDownList ID="ddlKeeper2" runat="server" /></td></tr>
+        <tr><td>Additional keeper</td><td><asp:DropDownList ID="ddlKeeper3" runat="server" /></td></tr>
+        <tr><td>Additional keeper</td><td><asp:DropDownList ID="ddlKeeper4" runat="server" /></td></tr>
         <tr><td></td><td><asp:Button ID="btnRegister" runat="server" Text="Register animal" /></td></tr>
     </table>
 </asp:Content>
