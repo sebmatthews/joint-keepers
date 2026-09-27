@@ -21,12 +21,20 @@ export function legacyDriver(page, baseUrl) {
     async openAnimal({ tag }) {
       await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), page.click(`a:text-is("${tag}")`)]);
     },
-    async registerAnimal({ tag, species, dob, keeper }) {
+    async registerAnimal({ tag, species, dob, keeper, additionalKeepers = [] }) {
       await page.fill('#txtTag', tag);
       await page.selectOption('#ddlSpecies', { label: species });
       await page.fill('#txtDob', dob);
       await page.selectOption('#ddlKeeper', { label: keeper });
+      // Additional keepers exist only once the joint keepers change is made (IDs fixed in docs/joint-keepers-law.md).
+      for (const [i, extra] of additionalKeepers.entries()) {
+        await page.selectOption(`#ddlKeeper${i + 2}`, { label: extra });
+      }
       await submit('#btnRegister');
+    },
+    async addKeeper({ keeper }) {
+      if (keeper) await page.selectOption('#ddlAddKeeper', { label: keeper });
+      await submit('#btnAddKeeper');
     },
     async recordMovement({ tag, from, to, date }) {
       await page.goto(url('Movement.aspx'), { waitUntil: 'load' });

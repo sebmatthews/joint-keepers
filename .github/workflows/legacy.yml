@@ -11,6 +11,7 @@ on:
       - 'db/**'
       - 'tools/legacy-check/**'
       - 'golden/**'
+      - 'tools/*.mjs'
       - '.github/workflows/legacy.yml'
   workflow_dispatch:
 
@@ -27,7 +28,8 @@ jobs:
       LEGACY_URL: http://localhost:8080/
       AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
       AZURE_WEBAPP_URL: ${{ vars.AZURE_WEBAPP_URL }}
-      AZURE_READY: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE != '' && vars.AZURE_WEBAPP_NAME != '' && vars.AZURE_WEBAPP_URL != '' }}
+      AZURE_READY: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE != '' && vars.AZURE_WEBAPP_NAME != '' && vars.AZURE_WEBAPP_URL != '' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/demo/')) }}
+      APP_DB_BUILT: ${{ github.workspace }}\build\app.db
     defaults:
       run:
         shell: pwsh
@@ -55,8 +57,21 @@ jobs:
           Copy-Item "$pkg\build\net46\x86\SQLite.Interop.dll" "$env:SITE\Bin\x86\"
           Get-ChildItem -Recurse "$env:SITE\Bin" | Select-Object FullName, Length
 
-      - name: Copy the pristine database into the app
-        run: Copy-Item db\livestock.db "$env:SITE\App_Data\livestock.db"
+      # The app runs on a copy of the pristine database with any migrations in db/migrations applied.
+      - name: Make the app's database
+        run: |
+          New-Item -ItemType Directory -Force build | Out-Null
+          node --no-warnings tools/apply-migrations.mjs "$env:APP_DB_BUILT"
+          if ($LASTEXITCODE -ne 0) { throw "Applying migrations failed" }
+          Copy-Item "$env:APP_DB_BUILT" "$env:SITE\App_Data\livestock.db"
+          $migrations = @(Get-ChildItem db\migrations\*.sql -ErrorAction SilentlyContinue).Count
+          "HAS_MIGRATIONS=$(if ($migrations -gt 0) { 'true' } else { 'false' })" >> $env:GITHUB_ENV
+
+      - name: Check the joint keepers migration kept every keeper
+        if: env.HAS_MIGRATIONS == 'true'
+        run: |
+          node --no-warnings tools/check-migration.mjs "$env:APP_DB_BUILT"
+          if ($LASTEXITCODE -ne 0) { throw "The migration check failed" }
 
       - name: Compile the legacy app
         run: |
@@ -67,7 +82,7 @@ jobs:
           New-Item -ItemType Directory -Force "$env:BUILT\Bin\x64", "$env:BUILT\Bin\x86", "$env:BUILT\App_Data" | Out-Null
           Copy-Item "$env:SITE\Bin\x64\SQLite.Interop.dll" "$env:BUILT\Bin\x64\" -Force
           Copy-Item "$env:SITE\Bin\x86\SQLite.Interop.dll" "$env:BUILT\Bin\x86\" -Force
-          Copy-Item "$env:SITE\App_Data\livestock.db" "$env:BUILT\App_Data\" -Force
+          Copy-Item "$env:APP_DB_BUILT" "$env:BUILT\App_Data\livestock.db" -Force
           Get-ChildItem -Recurse "$env:BUILT" | Select-Object FullName, Length
 
       # IIS Express stops when the step that started it ends, so the app is started,
@@ -107,10 +122,29 @@ jobs:
               npm ci --no-audit --no-fund
               $env:APP_URL = $env:LEGACY_URL
               $env:APP_DB = "$env:BUILT\App_Data\livestock.db"
+              $env:PRISTINE_DB = $env:APP_DB_BUILT
               $env:SCREENS_DIR = "$env:GITHUB_WORKSPACE\build\screens"
-              $env:MODE = 'record'
-              node --no-warnings run.mjs
-              $checkExit = $LASTEXITCODE
+              if ($env:HAS_MIGRATIONS -ne 'true') {
+                # The legacy app as it stands: record the golden master.
+                $env:MODE = 'record'
+                node --no-warnings run.mjs
+                $checkExit = $LASTEXITCODE
+              } else {
+                # The legacy app after the joint keepers change: the original scenarios must show
+                # the same screens as the recorded golden master, apart from the animal page, which
+                # the law changes on purpose; then the law's own scenarios are recorded.
+                $env:MODE = 'compare'
+                $env:COMPARE = 'screen'
+                $env:EXPECTED_CHANGES = 'S04'
+                $env:RESULTS_DIR = "$env:GITHUB_WORKSPACE\golden\results"
+                node --no-warnings run.mjs
+                $checkExit = $LASTEXITCODE
+                $env:MODE = 'record'
+                $env:SCENARIOS = 'scenarios-joint-keepers.json'
+                $env:RESULTS_DIR = "$env:GITHUB_WORKSPACE\build\results-joint-keepers"
+                node --no-warnings run.mjs
+                if ($LASTEXITCODE -ne 0) { $checkExit = $LASTEXITCODE }
+              }
               Pop-Location
             }
           } finally {
@@ -121,7 +155,7 @@ jobs:
 
       - name: Prepare the app for Azure with a fresh database
         if: env.AZURE_READY == 'true'
-        run: Copy-Item db\livestock.db "$env:BUILT\App_Data\livestock.db" -Force
+        run: Copy-Item "$env:APP_DB_BUILT" "$env:BUILT\App_Data\livestock.db" -Force
 
       - name: Deploy the legacy app to Azure App Service
         if: env.AZURE_READY == 'true'
@@ -137,7 +171,7 @@ jobs:
         if: env.AZURE_READY == 'true'
         run: |
           $deployed = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
-          Write-Host "Checkout to deployed: $($deployed - [int64]$env:JOB_START) seconds"
+          Write-Host "Job start to deployed: $($deployed - [int64]$env:JOB_START) seconds"
           Push-Location tools/legacy-check
           $env:HOSTED_URL = $env:AZURE_WEBAPP_URL
           $env:SCREENS_DIR = "$env:GITHUB_WORKSPACE\build\hosted"
@@ -145,7 +179,7 @@ jobs:
           $exit = $LASTEXITCODE
           Pop-Location
           $done = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
-          Write-Host "Checkout to hosted app checked: $($done - [int64]$env:JOB_START) seconds"
+          Write-Host "Job start to hosted app checked: $($done - [int64]$env:JOB_START) seconds"
           if ($exit -ne 0) { throw "The hosted check failed" }
 
       - name: Upload hosted screenshots
@@ -170,6 +204,14 @@ jobs:
         with:
           name: golden-results
           path: golden/results/*.json
+          if-no-files-found: warn
+
+      - name: Upload joint keepers results
+        if: always() && env.HAS_MIGRATIONS == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: golden-results-joint-keepers
+          path: build/results-joint-keepers/*.json
           if-no-files-found: warn
 
       - name: Upload diagnostics

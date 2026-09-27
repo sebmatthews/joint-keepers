@@ -1,0 +1,39 @@
+{
+  "about": "Golden master scenarios for the Livestock Keeping (Joint Keepers) Regulations 2026, written from docs/joint-keepers-law.md. They run only against the app once the change is made. Each starts from the pristine database with the migrations applied.",
+  "scenarios": [
+    {
+      "id": "J01",
+      "title": "Register an animal with a primary keeper and one additional keeper",
+      "steps": [ { "do": "openHolding", "holding": "DM/103/0003" }, { "do": "registerAnimal", "tag": "LV00099911", "species": "Cattle", "dob": "14/03/2024", "keeper": "Priya Oakley", "additionalKeepers": ["Duncan Fairweather"], "screenshot": "j01-register-two-keepers" } ]
+    },
+    {
+      "id": "J02",
+      "title": "Try to register an animal with the same keeper chosen twice",
+      "steps": [ { "do": "openHolding", "holding": "DM/103/0003" }, { "do": "registerAnimal", "tag": "LV00099912", "species": "Cattle", "dob": "14/03/2024", "keeper": "Priya Oakley", "additionalKeepers": ["Priya Oakley"] } ]
+    },
+    {
+      "id": "J03",
+      "title": "Add a second keeper to an existing animal",
+      "steps": [ { "do": "openHolding", "holding": "DM/104/0004" }, { "do": "openAnimal", "tag": "LV00010851" }, { "do": "addKeeper", "keeper": "Margaret Holloway", "screenshot": "j03-add-keeper" } ]
+    },
+    {
+      "id": "J04",
+      "title": "Try to add a keeper who is already recorded for the animal",
+      "steps": [ { "do": "openHolding", "holding": "DM/104/0004" }, { "do": "openAnimal", "tag": "LV00010851" }, { "do": "addKeeper", "keeper": "Duncan Fairweather" } ]
+    },
+    {
+      "id": "J05",
+      "title": "Try to add a fifth keeper",
+      "steps": [
+        { "do": "openHolding", "holding": "DM/104/0004" }, { "do": "openAnimal", "tag": "LV00010851" },
+        { "do": "addKeeper", "keeper": "Ffion Marlow" }, { "do": "addKeeper", "keeper": "Margaret Holloway" }, { "do": "addKeeper", "keeper": "Priya Oakley" },
+        { "do": "addKeeper", "keeper": "Tobias Greenhalgh", "screenshot": "j05-fifth-keeper-refused" }
+      ]
+    },
+    {
+      "id": "J06",
+      "title": "Try to add a keeper without choosing one",
+      "steps": [ { "do": "openHolding", "holding": "DM/104/0004" }, { "do": "openAnimal", "tag": "LV00010851" }, { "do": "addKeeper" } ]
+    }
+  ]
+}

@@ -10,7 +10,15 @@
 //   MODE          record (default) or compare
 //   RESULTS_DIR   where results are written or read (default: golden/results)
 //   SCREENS_DIR   where screenshots go (default: build/screens)
+//   SCENARIOS     which scenario file in golden/ to run (default: scenarios.json)
+//   COMPARE       in compare mode, what must match: all (default) or screen (after a change to the
+//                 database's structure, such as the joint keepers migration, the tables differ by design)
+//   EXPECTED_CHANGES  scenario IDs, comma separated, that a deliberate change is expected to alter;
+//                 they are reported but do not fail the comparison
 //   CHROME_PATH   optional path to a Chrome or Chromium; otherwise the installed Chrome is used
+//
+// Today's date is replaced by '<today>' in everything recorded or compared, because
+// records the app dates 'today' would otherwise differ from one day to the next.
 import { chromium } from 'playwright-core';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from 'node:fs';
@@ -32,7 +40,19 @@ if (!APP_DB) { console.error('APP_DB must be set to the database file the runnin
 mkdirSync(RESULTS_DIR, { recursive: true });
 mkdirSync(SCREENS_DIR, { recursive: true });
 
-const { scenarios } = JSON.parse(readFileSync(join(here, 'scenarios.json'), 'utf8'));
+const SCENARIOS = process.env.SCENARIOS || 'scenarios.json';
+const COMPARE = process.env.COMPARE || 'all';
+const EXPECTED_CHANGES = (process.env.EXPECTED_CHANGES || '').split(',').map((s) => s.trim()).filter(Boolean);
+const { scenarios } = JSON.parse(readFileSync(join(here, SCENARIOS), 'utf8'));
+
+const now = new Date();
+const pad = (n) => String(n).padStart(2, '0');
+const todayForms = [
+  `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`,
+  `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`,
+];
+const maskToday = (value) => JSON.parse(JSON.stringify(value, (k, v) =>
+  typeof v === 'string' ? todayForms.reduce((s, d) => s.split(d).join('<today>'), v) : v));
 const { [`${DRIVER}Driver`]: makeDriver } = await import(`./drivers/${DRIVER}.mjs`);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -57,6 +77,7 @@ const browser = await chromium.launch(process.env.CHROME_PATH
   : { channel: 'chrome', headless: true });
 
 let failed = 0;
+let changed = 0;
 for (const s of scenarios) {
   await resetDatabase();
   const page = await browser.newPage({ viewport: { width: 1024, height: 700 } });
@@ -69,7 +90,7 @@ for (const s of scenarios) {
       await driver[action](args);
       if (screenshot) await page.screenshot({ path: join(SCREENS_DIR, `${screenshot}.png`), fullPage: true });
     }
-    outcome = { scenario: s.id, title: s.title, screen: await driver.readScreen(), database: dumpDatabase() };
+    outcome = { scenario: s.id, title: s.title, screen: maskToday(await driver.readScreen()), database: maskToday(dumpDatabase()) };
   } catch (err) {
     outcome = { scenario: s.id, title: s.title, error: err.message.split('\n')[0] };
     await page.screenshot({ path: join(SCREENS_DIR, `error-${s.id}.png`), fullPage: true }).catch(() => {});
@@ -84,15 +105,20 @@ for (const s of scenarios) {
     console.log(`${ok ? 'RECORDED' : 'ERROR   '}  ${s.id}  ${s.title}${ok ? '' : `: ${outcome.error}`}`);
   } else {
     const golden = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : null;
-    const ok = golden && !outcome.error && isDeepStrictEqual(outcome.screen, golden.screen) && isDeepStrictEqual(outcome.database, golden.database);
-    if (!ok) {
-      failed++;
-      writeFileSync(join(SCREENS_DIR, `mismatch-${s.id}.json`), JSON.stringify(outcome, null, 2) + '\n');
-    }
-    console.log(`${ok ? 'PASS' : 'FAIL'}  ${s.id}  ${s.title}${outcome.error ? `: ${outcome.error}` : ''}`);
+    const same = golden && !outcome.error && isDeepStrictEqual(outcome.screen, golden.screen)
+      && (COMPARE === 'screen' || isDeepStrictEqual(outcome.database, golden.database));
+    const expected = EXPECTED_CHANGES.includes(s.id);
+    if (!same) writeFileSync(join(SCREENS_DIR, `mismatch-${s.id}.json`), JSON.stringify(outcome, null, 2) + '\n');
+    if (!same && !expected) failed++;
+    if (!same && expected && !outcome.error) changed++;
+    const verdict = same ? 'PASS' : expected && !outcome.error ? 'CHANGED (expected)' : 'FAIL';
+    if (expected && outcome.error) failed++;
+    console.log(`${verdict}  ${s.id}  ${s.title}${outcome.error ? `: ${outcome.error}` : ''}`);
   }
 }
 await browser.close();
 
-console.log(failed ? `${failed} scenario(s) did not pass` : `All ${scenarios.length} scenarios ${MODE === 'record' ? 'recorded' : 'match the golden results'}`);
+if (failed) console.log(`${failed} scenario(s) did not pass`);
+else if (MODE === 'record') console.log(`All ${scenarios.length} scenarios recorded`);
+else console.log(`${scenarios.length - changed} of ${scenarios.length} scenarios match the golden results${changed ? `; ${changed} changed as expected` : ''}`);
 process.exit(failed ? 1 : 0);
