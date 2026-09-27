@@ -40,7 +40,7 @@ These go into the hop 1 prompt and Cosine's project conventions file. The look o
 
 ## What It Does Not Cover
 
-The legacy app has a validation rule copied into two pages with small differences, one of the planted flaws. The registration page trims spaces from a tag number but does not accept lower case. The movement page accepts lower case but does not trim spaces. No scenario exercises that difference, so the golden master will not notice if the modern app settles on one rule. That is a decision for Seb: add a scenario that pins the old behaviour, or leave it as a talking point about the limits of any test.
+The legacy app has a validation rule copied into two pages with small differences, one of the planted flaws. The registration page trims spaces from a tag number but does not accept lower case. The movement page accepts lower case but does not trim spaces. No scenario exercises that difference, so the golden master will not notice if the modern app settles on one rule. Decided by Seb on 27 September 2026: this is left untested on purpose, and used as a talking point about the limits of any test, so that a sensible tidy-up by the agent cannot fail the check live.
 
 ## Running It
 

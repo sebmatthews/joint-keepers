@@ -41,6 +41,8 @@ Show: the scenarios in `golden/scenarios.json`, and the golden results folder.
 
 Say: 'Before touching anything, we recorded exactly what the old service does. Twelve everyday scenarios, like registering a cow or trying to move an animal to the farm it is already on. For each one we saved what the screen showed and every row in the database. That recording is the standard the new version must meet, exactly. We also took a snapshot of the database's structure, and hop 1 is not allowed to change it.'
 
+Then make the limit plain: 'A golden master only protects what the scenarios exercise. Remember the tag number check copied into two pages? No scenario types a lower-case tag, so if the agent merges the two copies into one rule, the check stays green. That is a decision a person has to make on purpose, not something a test makes for you.'
+
 The structure snapshot and its check are not built yet.
 
 ## Hop 1: Modernise (2:30 to 6:00)
