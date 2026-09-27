@@ -1,5 +1,7 @@
 # Builds the legacy VB.NET Web Forms app on a Windows machine, runs it on SQLite,
 # checks it, records the golden master results and takes the demo screenshots.
+# If Azure is set up (see docs/azure-setup.md), it then deploys the app to Azure
+# App Service and checks the live address.
 name: Legacy app
 
 on:
@@ -23,11 +25,17 @@ jobs:
       BUILT: ${{ github.workspace }}\build\legacy
       SCREENS_DIR: ${{ github.workspace }}\build\screens
       LEGACY_URL: http://localhost:8080/
+      AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
+      AZURE_WEBAPP_URL: ${{ vars.AZURE_WEBAPP_URL }}
+      AZURE_READY: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE != '' && vars.AZURE_WEBAPP_NAME != '' && vars.AZURE_WEBAPP_URL != '' }}
     defaults:
       run:
         shell: pwsh
 
     steps:
+      - name: Note the start time
+        run: '"JOB_START=$([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())" >> $env:GITHUB_ENV'
+
       - uses: actions/checkout@v7
 
       - name: Fetch the SQLite library for .NET Framework
@@ -110,6 +118,43 @@ jobs:
             if ($server -and -not $server.HasExited) { Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue }
           }
           if ($checkExit -ne 0) { throw "The check failed" }
+
+      - name: Prepare the app for Azure with a fresh database
+        if: env.AZURE_READY == 'true'
+        run: Copy-Item db\livestock.db "$env:BUILT\App_Data\livestock.db" -Force
+
+      - name: Deploy the legacy app to Azure App Service
+        if: env.AZURE_READY == 'true'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.BUILT }}
+          clean: true
+          restart: true
+
+      - name: Check the hosted app
+        if: env.AZURE_READY == 'true'
+        run: |
+          $deployed = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+          Write-Host "Checkout to deployed: $($deployed - [int64]$env:JOB_START) seconds"
+          Push-Location tools/legacy-check
+          $env:HOSTED_URL = $env:AZURE_WEBAPP_URL
+          $env:SCREENS_DIR = "$env:GITHUB_WORKSPACE\build\hosted"
+          node hosted.mjs
+          $exit = $LASTEXITCODE
+          Pop-Location
+          $done = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+          Write-Host "Checkout to hosted app checked: $($done - [int64]$env:JOB_START) seconds"
+          if ($exit -ne 0) { throw "The hosted check failed" }
+
+      - name: Upload hosted screenshots
+        if: always() && env.AZURE_READY == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: hosted-screens
+          path: build/hosted
+          if-no-files-found: warn
 
       - name: Upload screenshots
         if: always()
