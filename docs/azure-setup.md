@@ -42,9 +42,11 @@ On the next push, after the legacy app passes its checks on the Windows build ma
 
 Until the secret and variables exist, the workflow skips the Azure steps and behaves as before.
 
-## Costs
+## Costs and Up and Down
 
-The free tier costs nothing, but allows only 60 minutes of processing a day, is 32-bit only, and puts the app to sleep after 20 minutes without visitors, so the first page after a pause is slow. For a real demo, switch the plan to Basic B1 (about £0.07 an hour in UK South, charged for the hours it exists; the UK West price is not checked) beforehand and back to Free afterwards. Confirmed from Microsoft's App Service limits and UK South prices, checked 27 September 2026.
+The free tier costs nothing, and with one presenter using the app it is expected to be enough. Its limits are 60 minutes of processing a day (time the processor is busy, not time the app is open), 32-bit only (the trial showed this works), and sleeping after 20 minutes without visitors, so open the app a minute before a demo to wake it. Move to Basic B1 (about £0.07 an hour in UK South, charged for every hour the plan exists, even with the app stopped; the UK West price is not checked) only if a limit is actually hit. Limits and prices confirmed from Microsoft's pages, checked 27 September 2026.
+
+To put the app up or down, use **Start** and **Stop** on the web app's Overview page in the portal. While stopped, visitors see Azure's 'stopped' page. The database is kept while stopped; it resets to the pristine copy on the next deploy. Keep the app stopped except around demos and rehearsals, because it is deliberately vulnerable.
 
 ## Sources
 
