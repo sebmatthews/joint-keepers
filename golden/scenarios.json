@@ -1,0 +1,65 @@
+{
+  "about": "Golden master scenarios for Register livestock. Each one starts from the pristine database. The runner records what the screen shows and every row of every table afterwards. The legacy app's recording is the golden result; the modern app must reproduce it exactly.",
+  "scenarios": [
+    {
+      "id": "S01",
+      "title": "View the list of holdings",
+      "steps": [ { "do": "openHoldings", "screenshot": "01-holdings" } ]
+    },
+    {
+      "id": "S02",
+      "title": "Search holdings by name for 'Muddlecombe'",
+      "steps": [ { "do": "openHoldings" }, { "do": "searchHoldings", "term": "Muddlecombe", "screenshot": "02-holdings-search" } ]
+    },
+    {
+      "id": "S03",
+      "title": "View the animal register for Hollowmere Farm",
+      "steps": [ { "do": "openHolding", "holding": "DM/103/0003", "screenshot": "03-holding-register" } ]
+    },
+    {
+      "id": "S04",
+      "title": "View an animal that has moved twice, with its movement history",
+      "steps": [ { "do": "openHolding", "holding": "DM/104/0004" }, { "do": "openAnimal", "tag": "LV00010851", "screenshot": "04-animal-details" } ]
+    },
+    {
+      "id": "S05",
+      "title": "Register a cow with a correctly formed tag number on Hollowmere Farm",
+      "steps": [ { "do": "openHolding", "holding": "DM/103/0003" }, { "do": "registerAnimal", "tag": "LV00099901", "species": "Cattle", "dob": "14/03/2024", "keeper": "Priya Oakley", "screenshot": "05-register-success" } ]
+    },
+    {
+      "id": "S06",
+      "title": "Try to register a cow with a badly formed tag number",
+      "steps": [ { "do": "openHolding", "holding": "DM/103/0003" }, { "do": "registerAnimal", "tag": "LV12345", "species": "Cattle", "dob": "14/03/2024", "keeper": "Priya Oakley", "screenshot": "06-register-bad-tag" } ]
+    },
+    {
+      "id": "S07",
+      "title": "Try to register a sheep with a date of birth in the future",
+      "steps": [ { "do": "openHolding", "holding": "DM/103/0003" }, { "do": "registerAnimal", "tag": "LV00099902", "species": "Sheep", "dob": "01/01/2099", "keeper": "Priya Oakley" } ]
+    },
+    {
+      "id": "S08",
+      "title": "Try to register an animal with a tag number that is already registered",
+      "steps": [ { "do": "openHolding", "holding": "DM/103/0003" }, { "do": "registerAnimal", "tag": "LV00010000", "species": "Cattle", "dob": "14/03/2024", "keeper": "Priya Oakley" } ]
+    },
+    {
+      "id": "S09",
+      "title": "Record a movement of an animal from Brackenridge Farm to Kettleby Down",
+      "steps": [ { "do": "recordMovement", "tag": "LV00010000", "from": "Brackenridge Farm", "to": "Kettleby Down", "date": "02/09/2026", "screenshot": "07-movement-success" } ]
+    },
+    {
+      "id": "S10",
+      "title": "Try to move an animal to the holding it is already on",
+      "steps": [ { "do": "recordMovement", "tag": "LV00010000", "from": "Brackenridge Farm", "to": "Brackenridge Farm", "date": "02/09/2026", "screenshot": "08-movement-same-holding" } ]
+    },
+    {
+      "id": "S11",
+      "title": "Try to move an animal from a holding it is not on",
+      "steps": [ { "do": "recordMovement", "tag": "LV00010000", "from": "Hollowmere Farm", "to": "Kettleby Down", "date": "02/09/2026" } ]
+    },
+    {
+      "id": "S12",
+      "title": "Try to record a movement for a tag number that is not registered",
+      "steps": [ { "do": "recordMovement", "tag": "LV99999999", "from": "Brackenridge Farm", "to": "Kettleby Down", "date": "02/09/2026" } ]
+    }
+  ]
+}

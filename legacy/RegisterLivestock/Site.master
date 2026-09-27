@@ -1,0 +1,23 @@
+<%@ Master Language="VB" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Register livestock</title>
+    <link href="Site.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div id="header">UK Government Demo Service</div>
+    <div id="nav">
+        <a href="Default.aspx">Holdings</a> |
+        <a href="Movement.aspx">Record a movement</a>
+    </div>
+    <div id="content">
+        <h1>Register livestock</h1>
+        <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+    </div>
+    <div id="footer">Demo service. Not a real government service.</div>
+    </form>
+</body>
+</html>

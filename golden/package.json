@@ -1,0 +1,14 @@
+{
+  "name": "golden-master",
+  "private": true,
+  "description": "Records how the legacy app behaves, and checks the modern app behaves exactly the same.",
+  "type": "module",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "record": "node --no-warnings run.mjs",
+    "compare": "MODE=compare node --no-warnings run.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.63.0"
+  }
+}

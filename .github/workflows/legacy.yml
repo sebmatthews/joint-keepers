@@ -1,5 +1,5 @@
-# Phase 1: prove a GitHub Windows build machine can compile, run, test and
-# screenshot the legacy VB.NET Web Forms app on SQLite.
+# Builds the legacy VB.NET Web Forms app on a Windows machine, runs it on SQLite,
+# checks it, records the golden master results and takes the demo screenshots.
 name: Legacy app
 
 on:
@@ -8,6 +8,7 @@ on:
       - 'legacy/**'
       - 'db/**'
       - 'tools/legacy-check/**'
+      - 'golden/**'
       - '.github/workflows/legacy.yml'
   workflow_dispatch:
 
@@ -89,9 +90,21 @@ jobs:
             if (-not $up) { throw "The legacy app did not respond" }
             Push-Location tools/legacy-check
             npm ci --no-audit --no-fund
+            $env:SCREENS_DIR = "$env:GITHUB_WORKSPACE\build\smoke"
             npm run check
             $checkExit = $LASTEXITCODE
             Pop-Location
+            if ($checkExit -eq 0) {
+              Push-Location golden
+              npm ci --no-audit --no-fund
+              $env:APP_URL = $env:LEGACY_URL
+              $env:APP_DB = "$env:BUILT\App_Data\livestock.db"
+              $env:SCREENS_DIR = "$env:GITHUB_WORKSPACE\build\screens"
+              $env:MODE = 'record'
+              node --no-warnings run.mjs
+              $checkExit = $LASTEXITCODE
+              Pop-Location
+            }
           } finally {
             Copy-Item "$env:USERPROFILE\Documents\IISExpress\Logs" $diag -Recurse -ErrorAction SilentlyContinue
             if ($server -and -not $server.HasExited) { Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue }
@@ -104,6 +117,14 @@ jobs:
         with:
           name: legacy-screens
           path: build/screens
+          if-no-files-found: warn
+
+      - name: Upload golden master results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: golden-results
+          path: golden/results/*.json
           if-no-files-found: warn
 
       - name: Upload diagnostics

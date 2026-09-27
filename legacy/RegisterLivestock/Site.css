@@ -7,3 +7,11 @@ table.grid { border-collapse: collapse; border: 1px solid #666; }
 table.grid th { background: #ccd4e0; text-align: left; padding: 3px 8px; }
 table.grid td { padding: 3px 8px; }
 #footer { margin: 0 10px 10px 10px; font-size: 0.85em; color: #555; }
+#nav { margin: 6px 10px 0 10px; }
+#nav a { color: #334466; }
+h3 { font-size: 1.05em; color: #334466; margin-top: 18px; }
+table.form td { padding: 3px 8px 3px 0; }
+.message { display: block; margin: 6px 0; font-weight: bold; }
+.message.error { color: #b00000; }
+.message.success { color: #006000; }
+table#details th { width: 140px; }
