@@ -12,7 +12,7 @@ Status: trial, 27 September 2026. This puts the legacy app on Azure App Service'
    - **Publish**: Code.
    - **Runtime stack**: ASP.NET V4.8.
    - **Operating System**: Windows.
-   - **Region**: UK South.
+   - **Region**: UK West. UK South refused the free tier on 27 September 2026 with 'Operation cannot be completed without additional quota' (F1 limit 0); UK West worked. If UK West refuses too, try North Europe or West Europe.
    - **Pricing plan**: create a new plan and choose **Free F1**.
 4. On the **Deployment** tab:
    - **Continuous deployment**: leave it **disabled**. If it is enabled, Azure writes its own workflow file into the repository.
@@ -28,7 +28,7 @@ Status: trial, 27 September 2026. This puts the legacy app on Azure App Service'
 ## 3. Give GitHub What It Needs
 
 1. On the app's **Overview** page, select **Download publish profile**. This file is a password for deploying to the app; treat it as one.
-2. Also on **Overview**, copy the **Default domain**. It looks like `joint-keepers-demo-abc123.uksouth-01.azurewebsites.net`.
+2. Also on **Overview**, copy the **Default domain**. It looks like `joint-keepers-demo-abc123.ukwest-01.azurewebsites.net`.
 3. In GitHub, open the repository, then **Settings**, **Secrets and variables**, **Actions**.
 4. On the **Secrets** tab, select **New repository secret**. Name: `AZURE_WEBAPP_PUBLISH_PROFILE`. Value: paste the whole contents of the downloaded file.
 5. On the **Variables** tab, add two repository variables:
@@ -44,7 +44,7 @@ Until the secret and variables exist, the workflow skips the Azure steps and beh
 
 ## Costs
 
-The free tier costs nothing, but allows only 60 minutes of processing a day, is 32-bit only, and puts the app to sleep after 20 minutes without visitors, so the first page after a pause is slow. For a real demo, switch the plan to Basic B1 (about £0.07 an hour, charged for the hours it exists) beforehand and back to Free afterwards. Confirmed from Microsoft's App Service limits and UK South prices, checked 27 September 2026.
+The free tier costs nothing, but allows only 60 minutes of processing a day, is 32-bit only, and puts the app to sleep after 20 minutes without visitors, so the first page after a pause is slow. For a real demo, switch the plan to Basic B1 (about £0.07 an hour in UK South, charged for the hours it exists; the UK West price is not checked) beforehand and back to Free afterwards. Confirmed from Microsoft's App Service limits and UK South prices, checked 27 September 2026.
 
 ## Sources
 
