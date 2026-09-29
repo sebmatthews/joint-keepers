@@ -3,7 +3,7 @@
 #
 #   ./demo.sh check      check this Mac is ready, without changing anything
 #   ./demo.sh ready      get everything to the starting point before a demo
-#   ./demo.sh prompt 1   copy the hop 1 prompt, ready to paste into Cosine
+#                        (then point Cosine at the brief: see the demo guide)
 #   ./demo.sh prove      send Cosine's change to GitHub, build it, check it and put it on Azure
 #   ./demo.sh jump NAME  go straight to a checkpoint: 'start', or 'hop1' once it is chosen
 #   ./demo.sh reset      after a demo: stop the app on Azure
@@ -163,21 +163,7 @@ cmd_ready() {
 
   say "Not automated yet: clearing Cosine's saved memories from earlier runs."
   say "Ready. The app is at: $(app_address)"
-  echo "Next: start Cosine in this folder, then run './$SCRIPT_NAME prompt 1' and paste the prompt into Cosine."
-}
-
-cmd_prompt() {
-  local file text
-  case "${1:-}" in
-    1) file=prompts/hop-1-joint-keepers.md ;;
-    2) fail "the hop 2 prompt is not written yet." ;;
-    *) fail "say which prompt: './$SCRIPT_NAME prompt 1'." ;;
-  esac
-  [ -f "$file" ] || fail "$file is missing."
-  text="Carry out the brief in $file"
-  printf '%s' "$text" | pbcopy
-  say "Copied. Paste this into Cosine:"
-  echo "  $text"
+  echo "Next: start Cosine in this folder and type: Carry out the brief in prompts/hop-1-joint-keepers.md"
 }
 
 cmd_prove() {
@@ -245,7 +231,6 @@ cmd_reset() {
 case "${1:-}" in
   check)  cmd_check ;;
   ready)  cmd_ready ;;
-  prompt) cmd_prompt "${2:-}" ;;
   prove)  cmd_prove ;;
   jump)   cmd_jump "${2:-}" ;;
   reset)  cmd_reset ;;

@@ -57,7 +57,11 @@ Show: Part A of `docs/joint-keepers-law.md`, the Regulations.
 
 Say: 'Parliament has passed the Livestock Keeping (Joint Keepers) Regulations 2026. They are fictional. From 1 October an animal can have up to four keepers, one of them the primary keeper, and every existing keeper becomes a primary keeper. The system has to be ready before then. And this is the old system: we are changing fifteen-year-old code, not replacing it.'
 
-In Terminal, run `./demo.sh prompt 1`, which copies the hop 1 prompt. Start Cosine in the same folder and paste the prompt in: 'Carry out the brief in prompts/hop-1-joint-keepers.md'. While it works, point out that it reads the law, finds where keepers are used in the old pages, writes a migration for the database, and keeps to the old style rather than rewriting everything.
+Start Cosine in the demo folder and type exactly this, the same words every time:
+
+    Carry out the brief in prompts/hop-1-joint-keepers.md
+
+Say as you type: 'The requirements are already written down as a brief in the repository, the way a team would hand over a piece of work, so I just point the agent at it.' While it works, point out that it reads the law, finds where keepers are used in the old pages, writes a migration for the database, and keeps to the old style rather than rewriting everything.
 
 ## Proof After Hop 1 (6:00 to 7:00)
 
