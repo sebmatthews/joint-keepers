@@ -1,6 +1,6 @@
 # Demo Guide
 
-Status: draft, 29 September 2026. Standard track only; the shallow and deep tracks are sketched at the end. Built and proved: the legacy app and its screenshots, the golden master, hop 1's law, prompt and checks, and hosting on Azure. Built: the demo command, `./demo.sh`, which does every step that is not part of the story. `./demo.sh start` and `./demo.sh finish` have been run for real (29 September 2026); `publish` and `backup` have not yet, so expect rough edges there. Not built yet: hop 2, the code page and the recordings; they are marked. Screenshots of the original app are in `demo/screens/legacy`; screenshots of the app after hop 1 are in `demo/screens/joint-keepers`, from Cosine's passing run of the hop 1 prompt on 27 September 2026.
+Status: draft, 29 September 2026. Standard track only; the shallow and deep tracks are sketched at the end. Built and proved: the legacy app and its screenshots, the golden master, the new law, its brief and checks, and hosting on Azure. Built: the demo command, `./demo.sh`, which does every step that is not part of the story. `./demo.sh start` and `./demo.sh finish` have been run for real (29 September 2026); `publish` and `backup` have not yet, so expect rough edges there. Not built yet: the modernisation stage, the code page and the recordings; they are marked. Screenshots of the original app are in `demo/screens/legacy`; screenshots of the app after the new law are in `demo/screens/joint-keepers`, from Cosine's passing run of the new-law brief on 27 September 2026.
 
 ## The Story in One Breath
 
@@ -24,10 +24,10 @@ Have Terminal, the browser and this guide open, and the fallback screenshots to 
 | --- | --- |
 | 0:00 to 1:30 | The scene |
 | 1:30 to 2:30 | The safety net |
-| 2:30 to 6:00 | Hop 1: the new law, in the old code |
-| 6:00 to 7:00 | Proof after hop 1 |
-| 7:00 to 10:00 | Hop 2: modernise |
-| 10:00 to 11:00 | Proof after hop 2 |
+| 2:30 to 6:00 | The new law, in the old code |
+| 6:00 to 7:00 | Proof after the new law |
+| 7:00 to 10:00 | Modernise |
+| 10:00 to 11:00 | Proof after modernising |
 | 11:00 to 12:00 | Close |
 
 ## The Scene (0:00 to 1:30)
@@ -51,7 +51,7 @@ Say: 'Before touching anything, we recorded exactly what the old service does. T
 
 Then make the limit plain: 'A golden master only protects what the scenarios exercise. Remember the tag number check copied into two pages? No scenario types a lower-case tag, so if the agent merges the two copies into one rule, the check stays green. That is a decision a person has to make on purpose, not something a test makes for you.'
 
-## Hop 1: The New Law, in the Old Code (2:30 to 6:00)
+## The New Law, in the Old Code (2:30 to 6:00)
 
 Show: Part A of `docs/joint-keepers-law.md`, the Regulations.
 
@@ -59,11 +59,11 @@ Say: 'Parliament has passed the Livestock Keeping (Joint Keepers) Regulations 20
 
 Start Cosine in the demo folder and type exactly this, the same words every time:
 
-    Carry out the brief in prompts/hop-1-joint-keepers.md
+    Carry out the brief in prompts/new-law.md
 
 Say as you type: 'The requirements are already written down as a brief in the repository, the way a team would hand over a piece of work, so I just point the agent at it.' While it works, point out that it reads the law, finds where keepers are used in the old pages, writes a migration for the database, and keeps to the old style rather than rewriting everything.
 
-## Proof After Hop 1 (6:00 to 7:00)
+## Proof After the New Law (6:00 to 7:00)
 
 When Cosine has finished, run:
 
@@ -79,11 +79,11 @@ If the build fails, the demo command says so and opens the screenshots in `demo/
 
 Say: 'Old code, new law, and proof that every screen the law did not touch still shows exactly what it showed before, and that every keeper's record came through the change.'
 
-## Hop 2: Modernise (7:00 to 10:00)
+## Modernise (7:00 to 10:00)
 
-Not built yet. Point Cosine at the hop 2 brief, in fixed words as for hop 1. While it works, point out its task list and that every step is a separate change that can be inspected or undone. Whether it modernises all four screens live, or one live with three done earlier, is decided by rehearsal.
+Not built yet. Point Cosine at the modernisation brief, in fixed words as for the new law. While it works, point out its task list and that every step is a separate change that can be inspected or undone. Whether it modernises all four screens live, or one live with three done earlier, is decided by rehearsal.
 
-## Proof After Hop 2 (10:00 to 11:00)
+## Proof After Modernising (10:00 to 11:00)
 
 Not built yet. The golden master runs against the modern app, including the joint keepers scenarios: all pass. The database structure check passes. Show the modern app next to the old one, and the old and new code side by side.
 
@@ -91,7 +91,7 @@ Say: 'The code is new. The behaviour, including the new law, is identical, and h
 
 ## Close (11:00 to 12:00)
 
-Say: 'Every step the agent took was a change a person reviewed and approved. The next hops would be moving the database and the architecture, one at a time, each with the same proof.'
+Say: 'Every step the agent took was a change a person reviewed and approved. The next stages would be moving the database and the architecture, one at a time, each with the same proof.'
 
 ## Afterwards
 
@@ -99,8 +99,8 @@ Run `./demo.sh finish`. It stops the app on Azure, which is deliberately insecur
 
 ## If Something Goes Wrong
 
-The rule: never debug live. Say 'let me show you the one we ran earlier', and move on. Until recordings exist, the fallback for the proof after hop 1 is the screenshots in `demo/screens/joint-keepers`, and for the scene the screenshots in `demo/screens/legacy`. The demo command keeps backups: versions of the app saved from checked rehearsals. `./demo.sh backup new-law` puts the app as it is after the law change live in about two minutes, once Seb has saved that backup; `./demo.sh backup original` puts the original app back. A `backup modern` will follow when hop 2 is built. Each section will also have its recording (not made yet).
+The rule: never debug live. Say 'let me show you the one we ran earlier', and move on. Until recordings exist, the fallback for the proof after the new law is the screenshots in `demo/screens/joint-keepers`, and for the scene the screenshots in `demo/screens/legacy`. The demo command keeps backups: versions of the app saved from checked rehearsals. `./demo.sh backup new-law` puts the app as it is after the law change live in about two minutes, once Seb has saved that backup; `./demo.sh backup original` puts the original app back. A `backup modern` will follow when the modernisation stage is built. Each section will also have its recording (not made yet).
 
 ## Shallow and Deep Tracks
 
-Shallow: the scene, the law, then straight to the changed and modernised apps running; no agent on screen. Deep: as standard, plus opening the repository in an editor to walk through the code changes and tests after each hop. To be written once the standard track is rehearsed.
+Shallow: the scene, the law, then straight to the changed and modernised apps running; no agent on screen. Deep: as standard, plus opening the repository in an editor to walk through the code changes and tests after each stage. To be written once the standard track is rehearsed.

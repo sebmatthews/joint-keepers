@@ -1,4 +1,4 @@
-# Hop 1: The Joint Keepers Regulations
+# The New Law: The Joint Keepers Regulations
 
 A new law applies to the Register livestock service: the Livestock Keeping (Joint Keepers) Regulations 2026. It is described in full in docs/joint-keepers-law.md, Part A for the law and Part B for what the service must do.
 

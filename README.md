@@ -4,7 +4,7 @@ A repeatable live demo of AI-augmented code generation, run through Cosine CLI (
 
 The service in the demo, 'Register livestock', is fictional. It is badged only as a UK Government demo service, does not represent any real department or system, and the legislation it implements is invented for the demo.
 
-Status: in build. The demo changes the legacy app to meet a new law (hop 1), then modernises it (hop 2). The legacy app, its database, the golden master and everything hop 1 needs are built, and hop 1 has passed its checks on an agent run. Hop 2 and the presenter tooling are not built yet.
+Status: in build. The demo changes the legacy app to meet a new law (the new-law stage), then modernises it (the modernisation stage). The legacy app, its database, the golden master and everything the new-law stage needs are built, and the new-law stage has passed its checks on an agent run. The demo command for presenters is built. The modernisation stage is not built yet.
 
 ## What Is Here
 
@@ -12,7 +12,7 @@ Status: in build. The demo changes the legacy app to meet a new law (hop 1), the
 - `db`: the database structure, the invented seed data and the pristine database
 - `golden`: the golden master scenarios (including the joint keepers scenarios), the runner and the recorded results
 - `demo/screens/legacy`: screenshots of the legacy app, taken on GitHub's Windows build machine
-- `demo/screens/joint-keepers`: screenshots of the legacy app after the joint keepers change, from Cosine's passing run of the hop 1 prompt
+- `demo/screens/joint-keepers`: screenshots of the legacy app after the joint keepers change, from Cosine's passing run of the new-law brief
 - `demo.sh`: the demo command presenters run: `./demo.sh check`, `start`, `publish`, `backup` and `finish`
 - `.github/workflows`: the legacy app's build, and the workflow that starts and stops the Azure app
 - `docs`: the joint keepers law, the install guide and demo guide for presenters, the admin guide, the golden master approach and the Azure setup

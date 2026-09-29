@@ -1,6 +1,6 @@
 # The Golden Master Approach
 
-Status: draft, 27 September 2026. The legacy half and the checks after the law change are built and proved. The modern half is written for hop 2.
+Status: draft, 27 September 2026. The legacy half and the checks after the law change are built and proved. The modern half is written for the modernisation stage.
 
 ## What It Is
 
@@ -21,22 +21,22 @@ After each scenario, two things are recorded:
 
 The legacy app's recording is the golden result. It is made on GitHub's Windows build machine, because the legacy app only runs on Windows, and saved in `golden/results`, one file per scenario.
 
-The demo changes the legacy app to meet a new law first (hop 1), then modernises it (hop 2). How the checks work after the law change is set out below. After hop 2, the scenarios run against the modern app and every result must match exactly. Any difference, however small, is a failure.
+The demo changes the legacy app to meet a new law first (the new-law stage), then modernises it (the modernisation stage). How the checks work after the law change is set out below. After modernising, the scenarios run against the modern app and every result must match exactly. Any difference, however small, is a failure.
 
 ## Two Apps, One Set of Scenarios
 
-The scenarios say what to do, not which buttons to press. A driver for each app turns the steps into clicks and typing on that app's screens. The legacy driver is `golden/drivers/legacy.mjs`. The modern driver is written for the modern app in hop 2.
+The scenarios say what to do, not which buttons to press. A driver for each app turns the steps into clicks and typing on that app's screens. The legacy driver is `golden/drivers/legacy.mjs`. The modern driver is written for the modern app in the modernisation stage.
 
 ## What the Modern App Must Keep
 
-Because the comparison is exact, the modern app built in hop 2 must keep, word for word and character for character:
+Because the comparison is exact, the modern app built in the modernisation stage must keep, word for word and character for character:
 
 1. Every message the legacy app shows.
 2. Dates shown as DD/MM/YYYY.
 3. The same columns, in the same order, in each table on screen.
-4. The same database tables and rows, since hop 2 does not change the database.
+4. The same database tables and rows, since the modernisation stage does not change the database.
 
-These go into the hop 2 prompt and AGENTS.md. The look of the screens is free to change, which is the point of hop 2.
+These go into the modernisation brief and AGENTS.md. The look of the screens is free to change, which is the point of modernising.
 
 ## What It Does Not Cover
 
@@ -44,11 +44,11 @@ The legacy app has a validation rule copied into two pages with small difference
 
 ## After the Law Change
 
-Hop 1 changes the database's structure on purpose, through the migration in db/migrations. On a branch with a migration, the build therefore does three things instead of recording:
+The new-law stage changes the database's structure on purpose, through the migration in db/migrations. On a branch with a migration, the build therefore does three things instead of recording:
 
 1. Checks the migration: every animal still has exactly its old keeper, now as primary, dated from the law's commencement, 1 October 2026 (`tools/check-migration.mjs`).
 2. Runs the twelve original scenarios and compares what the screen shows with the recorded golden results. The database is not compared, because its structure has changed by design. The animal page (scenario S04) is expected to change, because the law adds its keepers table; every other scenario must match exactly.
-3. Records six scenarios for the law, J01 to J06, in `golden/scenarios-joint-keepers.json`. Once a hop 1 result is approved as the checkpoint, these recordings become the standard hop 2 must match.
+3. Records six scenarios for the law, J01 to J06, in `golden/scenarios-joint-keepers.json`. Once a new-law result is saved as the new-law backup, these recordings become the standard the modernisation stage must match.
 
 Keepers added through the screens are dated the day they are added, so the runner replaces today's date with '<today>' in everything it records or compares.
 

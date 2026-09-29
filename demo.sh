@@ -164,7 +164,7 @@ cmd_start() {
 
   say "Not automated yet: clearing Cosine's saved memories from earlier runs."
   say "Ready. The app is at: $(app_address)"
-  echo "Next: start Cosine in this folder and type: Carry out the brief in prompts/hop-1-joint-keepers.md"
+  echo "Next: start Cosine in this folder and type: Carry out the brief in prompts/new-law.md"
 }
 
 cmd_publish() {

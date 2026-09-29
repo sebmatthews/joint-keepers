@@ -1,6 +1,6 @@
 # Install Guide
 
-Status: draft, 29 September 2026. Written for presenters setting up a Mac to run the Joint Keepers demo. In the demo, an AI coding agent first changes the old version of the app to meet a new law (hop 1), then modernises it (hop 2, not built yet). Some choices are not made yet; those steps are marked. Facts about outside products are labelled confirmed (with where and when they were checked), or unconfirmed.
+Status: draft, 29 September 2026. Written for presenters setting up a Mac to run the Joint Keepers demo. In the demo, an AI coding agent first changes the old version of the app to meet a new law, then modernises it (not built yet). Some choices are not made yet; those steps are marked. Facts about outside products are labelled confirmed (with where and when they were checked), or unconfirmed.
 
 ## What You Need
 

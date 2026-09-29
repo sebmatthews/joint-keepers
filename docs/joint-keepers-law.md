@@ -2,7 +2,7 @@
 
 Status: agreed with Seb, 27 September 2026, including every item marked 'Decision'.
 
-This is the single source for the legislative change in hop 1. The hop 1 prompt points at it, the golden master scenarios for the change are written from it, and the demo presents Part A to the audience. Part A is fictional law. Part B is what the service must do to comply.
+This is the single source for the legislative change in the new-law stage. The new-law brief, `prompts/new-law.md`, points at it, the golden master scenarios for the change are written from it, and the demo presents Part A to the audience. Part A is fictional law. Part B is what the service must do to comply.
 
 ## Part A: The Regulations
 
@@ -36,7 +36,7 @@ Holding page, 'Register an animal' form: the single keeper list becomes 'Primary
 
 Animal page: the single 'Keeper' row is replaced by a Keepers table with the columns 'Keeper', 'Role' ('Primary' or 'Additional') and 'Date added' (DD/MM/YYYY), primary keeper first, then the others by name. Below it, an 'Add a keeper' form: one keeper list and an 'Add keeper' button.
 
-Decision: adding a keeper to an existing animal is in scope, because the demo's proof after hop 1 adds a second keeper on screen. Removing a keeper, and changing which keeper is primary, are out of scope.
+Decision: adding a keeper to an existing animal is in scope, because the demo's proof after the new law adds a second keeper on screen. Removing a keeper, and changing which keeper is primary, are out of scope.
 
 Every other screen stays as it is.
 

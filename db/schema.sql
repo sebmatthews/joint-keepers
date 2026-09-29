@@ -1,5 +1,5 @@
 -- Register livestock: legacy database schema.
--- Fictional service for the Joint Keepers demo. Hop 1 must leave this structure untouched.
+-- Fictional service for the Joint Keepers demo. The structure changes only through db/migrations; the modernisation stage must leave it untouched.
 
 CREATE TABLE Keeper (
     KeeperId    INTEGER PRIMARY KEY,
