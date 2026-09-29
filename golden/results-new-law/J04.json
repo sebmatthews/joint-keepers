@@ -1,0 +1,610 @@
+{
+  "scenario": "J04",
+  "title": "Try to add a keeper who is already recorded for the animal",
+  "screen": {
+    "messages": [
+      "This keeper is already recorded for this animal"
+    ],
+    "tables": [
+      [
+        [
+          "Tag number",
+          "LV00010851"
+        ],
+        [
+          "Species",
+          "Cattle"
+        ],
+        [
+          "Date of birth",
+          "01/11/2024"
+        ],
+        [
+          "Current holding",
+          "Stonebarrow Holding"
+        ]
+      ],
+      [
+        [
+          "Keeper",
+          "Role",
+          "Date added"
+        ],
+        [
+          "Duncan Fairweather",
+          "Primary",
+          "01/10/2026"
+        ]
+      ],
+      [
+        [
+          "Date",
+          "From",
+          "To"
+        ],
+        [
+          "08/06/2025",
+          "Kettleby Down",
+          "Hollowmere Farm"
+        ],
+        [
+          "16/07/2025",
+          "Hollowmere Farm",
+          "Stonebarrow Holding"
+        ]
+      ]
+    ]
+  },
+  "database": {
+    "Animal": [
+      {
+        "AnimalId": 1,
+        "TagNumber": "LV00010000",
+        "Species": "Pig",
+        "DateOfBirth": "2023-12-10",
+        "HoldingId": 1
+      },
+      {
+        "AnimalId": 2,
+        "TagNumber": "LV00010037",
+        "Species": "Goat",
+        "DateOfBirth": "2022-10-24",
+        "HoldingId": 3
+      },
+      {
+        "AnimalId": 3,
+        "TagNumber": "LV00010074",
+        "Species": "Cattle",
+        "DateOfBirth": "2022-12-08",
+        "HoldingId": 6
+      },
+      {
+        "AnimalId": 4,
+        "TagNumber": "LV00010111",
+        "Species": "Sheep",
+        "DateOfBirth": "2022-05-30",
+        "HoldingId": 4
+      },
+      {
+        "AnimalId": 5,
+        "TagNumber": "LV00010148",
+        "Species": "Pig",
+        "DateOfBirth": "2022-05-05",
+        "HoldingId": 5
+      },
+      {
+        "AnimalId": 6,
+        "TagNumber": "LV00010185",
+        "Species": "Sheep",
+        "DateOfBirth": "2022-11-20",
+        "HoldingId": 3
+      },
+      {
+        "AnimalId": 7,
+        "TagNumber": "LV00010222",
+        "Species": "Cattle",
+        "DateOfBirth": "2021-01-28",
+        "HoldingId": 2
+      },
+      {
+        "AnimalId": 8,
+        "TagNumber": "LV00010259",
+        "Species": "Pig",
+        "DateOfBirth": "2023-05-18",
+        "HoldingId": 2
+      },
+      {
+        "AnimalId": 9,
+        "TagNumber": "LV00010296",
+        "Species": "Cattle",
+        "DateOfBirth": "2023-01-03",
+        "HoldingId": 3
+      },
+      {
+        "AnimalId": 10,
+        "TagNumber": "LV00010333",
+        "Species": "Pig",
+        "DateOfBirth": "2024-02-05",
+        "HoldingId": 4
+      },
+      {
+        "AnimalId": 11,
+        "TagNumber": "LV00010370",
+        "Species": "Goat",
+        "DateOfBirth": "2022-05-29",
+        "HoldingId": 5
+      },
+      {
+        "AnimalId": 12,
+        "TagNumber": "LV00010407",
+        "Species": "Sheep",
+        "DateOfBirth": "2025-02-17",
+        "HoldingId": 1
+      },
+      {
+        "AnimalId": 13,
+        "TagNumber": "LV00010444",
+        "Species": "Cattle",
+        "DateOfBirth": "2021-02-19",
+        "HoldingId": 1
+      },
+      {
+        "AnimalId": 14,
+        "TagNumber": "LV00010481",
+        "Species": "Sheep",
+        "DateOfBirth": "2021-07-02",
+        "HoldingId": 2
+      },
+      {
+        "AnimalId": 15,
+        "TagNumber": "LV00010518",
+        "Species": "Sheep",
+        "DateOfBirth": "2022-01-01",
+        "HoldingId": 3
+      },
+      {
+        "AnimalId": 16,
+        "TagNumber": "LV00010555",
+        "Species": "Cattle",
+        "DateOfBirth": "2024-02-14",
+        "HoldingId": 4
+      },
+      {
+        "AnimalId": 17,
+        "TagNumber": "LV00010592",
+        "Species": "Sheep",
+        "DateOfBirth": "2023-02-11",
+        "HoldingId": 5
+      },
+      {
+        "AnimalId": 18,
+        "TagNumber": "LV00010629",
+        "Species": "Pig",
+        "DateOfBirth": "2024-10-24",
+        "HoldingId": 5
+      },
+      {
+        "AnimalId": 19,
+        "TagNumber": "LV00010666",
+        "Species": "Sheep",
+        "DateOfBirth": "2023-09-18",
+        "HoldingId": 1
+      },
+      {
+        "AnimalId": 20,
+        "TagNumber": "LV00010703",
+        "Species": "Cattle",
+        "DateOfBirth": "2025-02-27",
+        "HoldingId": 2
+      },
+      {
+        "AnimalId": 21,
+        "TagNumber": "LV00010740",
+        "Species": "Cattle",
+        "DateOfBirth": "2025-04-28",
+        "HoldingId": 3
+      },
+      {
+        "AnimalId": 22,
+        "TagNumber": "LV00010777",
+        "Species": "Goat",
+        "DateOfBirth": "2021-12-25",
+        "HoldingId": 4
+      },
+      {
+        "AnimalId": 23,
+        "TagNumber": "LV00010814",
+        "Species": "Sheep",
+        "DateOfBirth": "2023-04-26",
+        "HoldingId": 4
+      },
+      {
+        "AnimalId": 24,
+        "TagNumber": "LV00010851",
+        "Species": "Cattle",
+        "DateOfBirth": "2024-11-01",
+        "HoldingId": 4
+      },
+      {
+        "AnimalId": 25,
+        "TagNumber": "LV00010888",
+        "Species": "Sheep",
+        "DateOfBirth": "2021-08-08",
+        "HoldingId": 1
+      },
+      {
+        "AnimalId": 26,
+        "TagNumber": "LV00010925",
+        "Species": "Cattle",
+        "DateOfBirth": "2024-02-01",
+        "HoldingId": 3
+      },
+      {
+        "AnimalId": 27,
+        "TagNumber": "LV00010962",
+        "Species": "Sheep",
+        "DateOfBirth": "2021-11-03",
+        "HoldingId": 1
+      },
+      {
+        "AnimalId": 28,
+        "TagNumber": "LV00010999",
+        "Species": "Cattle",
+        "DateOfBirth": "2023-03-30",
+        "HoldingId": 4
+      },
+      {
+        "AnimalId": 29,
+        "TagNumber": "LV00011036",
+        "Species": "Cattle",
+        "DateOfBirth": "2021-11-14",
+        "HoldingId": 5
+      },
+      {
+        "AnimalId": 30,
+        "TagNumber": "LV00011073",
+        "Species": "Cattle",
+        "DateOfBirth": "2021-11-18",
+        "HoldingId": 6
+      }
+    ],
+    "AnimalKeeper": [
+      {
+        "AnimalId": 1,
+        "KeeperId": 1,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 2,
+        "KeeperId": 3,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 3,
+        "KeeperId": 1,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 4,
+        "KeeperId": 4,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 5,
+        "KeeperId": 5,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 6,
+        "KeeperId": 3,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 7,
+        "KeeperId": 2,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 8,
+        "KeeperId": 2,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 9,
+        "KeeperId": 3,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 10,
+        "KeeperId": 4,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 11,
+        "KeeperId": 5,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 12,
+        "KeeperId": 1,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 13,
+        "KeeperId": 1,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 14,
+        "KeeperId": 2,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 15,
+        "KeeperId": 3,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 16,
+        "KeeperId": 4,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 17,
+        "KeeperId": 5,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 18,
+        "KeeperId": 5,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 19,
+        "KeeperId": 1,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 20,
+        "KeeperId": 2,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 21,
+        "KeeperId": 3,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 22,
+        "KeeperId": 4,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 23,
+        "KeeperId": 4,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 24,
+        "KeeperId": 4,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 25,
+        "KeeperId": 1,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 26,
+        "KeeperId": 3,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 27,
+        "KeeperId": 1,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 28,
+        "KeeperId": 4,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 29,
+        "KeeperId": 5,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      },
+      {
+        "AnimalId": 30,
+        "KeeperId": 1,
+        "IsPrimary": 1,
+        "DateAdded": "2026-10-01"
+      }
+    ],
+    "Holding": [
+      {
+        "HoldingId": 1,
+        "HoldingNumber": "DM/101/0001",
+        "Name": "Brackenridge Farm",
+        "Address": "Brackenridge Lane, Brackenridge, Demoshire"
+      },
+      {
+        "HoldingId": 2,
+        "HoldingNumber": "DM/102/0002",
+        "Name": "Lower Muddlecombe Farm",
+        "Address": "Combe Road, Muddlecombe, Demoshire"
+      },
+      {
+        "HoldingId": 3,
+        "HoldingNumber": "DM/103/0003",
+        "Name": "Hollowmere Farm",
+        "Address": "Mere Lane, Hollowmere, Demoshire"
+      },
+      {
+        "HoldingId": 4,
+        "HoldingNumber": "DM/104/0004",
+        "Name": "Stonebarrow Holding",
+        "Address": "Barrow Hill, Stonebarrow, Demoshire"
+      },
+      {
+        "HoldingId": 5,
+        "HoldingNumber": "DM/102/0005",
+        "Name": "Upper Muddlecombe Farm",
+        "Address": "Top Road, Muddlecombe, Demoshire"
+      },
+      {
+        "HoldingId": 6,
+        "HoldingNumber": "DM/105/0006",
+        "Name": "Kettleby Down",
+        "Address": "Down Road, Kettleby, Demoshire"
+      }
+    ],
+    "Keeper": [
+      {
+        "KeeperId": 1,
+        "Name": "Ffion Marlow",
+        "Address": "Brackenridge Farm, Brackenridge, Demoshire",
+        "Phone": "01632 960101"
+      },
+      {
+        "KeeperId": 2,
+        "Name": "Tobias Greenhalgh",
+        "Address": "Lower Muddlecombe Farm, Muddlecombe, Demoshire",
+        "Phone": "01632 960102"
+      },
+      {
+        "KeeperId": 3,
+        "Name": "Priya Oakley",
+        "Address": "Hollowmere Farm, Hollowmere, Demoshire",
+        "Phone": "01632 960103"
+      },
+      {
+        "KeeperId": 4,
+        "Name": "Duncan Fairweather",
+        "Address": "Stonebarrow Holding, Stonebarrow, Demoshire",
+        "Phone": "01632 960104"
+      },
+      {
+        "KeeperId": 5,
+        "Name": "Margaret Holloway",
+        "Address": "Upper Muddlecombe Farm, Muddlecombe, Demoshire",
+        "Phone": "01632 960105"
+      }
+    ],
+    "Movement": [
+      {
+        "MovementId": 1,
+        "AnimalId": 7,
+        "FromHoldingId": 1,
+        "ToHoldingId": 2,
+        "MovementDate": "2021-09-24"
+      },
+      {
+        "MovementId": 2,
+        "AnimalId": 27,
+        "FromHoldingId": 3,
+        "ToHoldingId": 1,
+        "MovementDate": "2022-07-20"
+      },
+      {
+        "MovementId": 3,
+        "AnimalId": 3,
+        "FromHoldingId": 3,
+        "ToHoldingId": 6,
+        "MovementDate": "2023-06-06"
+      },
+      {
+        "MovementId": 4,
+        "AnimalId": 6,
+        "FromHoldingId": 6,
+        "ToHoldingId": 2,
+        "MovementDate": "2023-08-15"
+      },
+      {
+        "MovementId": 5,
+        "AnimalId": 2,
+        "FromHoldingId": 2,
+        "ToHoldingId": 3,
+        "MovementDate": "2023-08-21"
+      },
+      {
+        "MovementId": 6,
+        "AnimalId": 6,
+        "FromHoldingId": 2,
+        "ToHoldingId": 3,
+        "MovementDate": "2023-10-03"
+      },
+      {
+        "MovementId": 7,
+        "AnimalId": 23,
+        "FromHoldingId": 5,
+        "ToHoldingId": 4,
+        "MovementDate": "2024-01-17"
+      },
+      {
+        "MovementId": 8,
+        "AnimalId": 26,
+        "FromHoldingId": 2,
+        "ToHoldingId": 3,
+        "MovementDate": "2024-07-27"
+      },
+      {
+        "MovementId": 9,
+        "AnimalId": 18,
+        "FromHoldingId": 6,
+        "ToHoldingId": 5,
+        "MovementDate": "2025-05-17"
+      },
+      {
+        "MovementId": 10,
+        "AnimalId": 24,
+        "FromHoldingId": 6,
+        "ToHoldingId": 3,
+        "MovementDate": "2025-06-08"
+      },
+      {
+        "MovementId": 11,
+        "AnimalId": 24,
+        "FromHoldingId": 3,
+        "ToHoldingId": 4,
+        "MovementDate": "2025-07-16"
+      },
+      {
+        "MovementId": 12,
+        "AnimalId": 12,
+        "FromHoldingId": 6,
+        "ToHoldingId": 1,
+        "MovementDate": "2025-12-12"
+      }
+    ]
+  }
+}

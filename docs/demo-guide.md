@@ -71,7 +71,7 @@ When Cosine has finished, run:
 
 It saves Cosine's change, sends it to GitHub, starts the build, and shows each step as it finishes. If everything passes, the changed app goes live on Azure.
 
-In about two minutes, plus any wait for a GitHub machine, the Windows build machine checks that every existing animal kept its keeper as primary after the database migration, compiles the changed old code and checks it starts, runs the original scenarios and compares their screens (all the same except the animal page, which the law changes on purpose), runs the six new scenarios for the law and records their results, deploys the changed app to Azure, and checks the live address works.
+In about two minutes, plus any wait for a GitHub machine, the Windows build machine checks that every existing animal kept its keeper as primary after the database migration, compiles the changed old code and checks it starts, runs the original scenarios and compares their screens (all the same except the animal page, which the law changes on purpose), runs the six new scenarios for the law and checks each against its approved result, deploys the changed app to Azure, and checks the live address works.
 
 Then open the changed app on its Azure address, open an animal, and add a second keeper.
 

@@ -14,7 +14,9 @@
 //   COMPARE       in compare mode, what must match: all (default) or screen (after a change to the
 //                 database's structure, such as the joint keepers migration, the tables differ by design)
 //   EXPECTED_CHANGES  scenario IDs, comma separated, that a deliberate change is expected to alter;
-//                 they are reported but do not fail the comparison
+//                 they are reported but do not fail the comparison, unless EXPECTED_DIR is set
+//   EXPECTED_DIR  optional folder of approved results for the expected changes: an expected change
+//                 must then show exactly the approved screen, or the scenario fails
 //   CHROME_PATH   optional path to a Chrome or Chromium; otherwise the installed Chrome is used
 //
 // Today's date is replaced by '<today>' in everything recorded or compared, because
@@ -43,6 +45,7 @@ mkdirSync(SCREENS_DIR, { recursive: true });
 const SCENARIOS = process.env.SCENARIOS || 'scenarios.json';
 const COMPARE = process.env.COMPARE || 'all';
 const EXPECTED_CHANGES = (process.env.EXPECTED_CHANGES || '').split(',').map((s) => s.trim()).filter(Boolean);
+const EXPECTED_DIR = process.env.EXPECTED_DIR || '';
 const { scenarios } = JSON.parse(readFileSync(join(here, SCENARIOS), 'utf8'));
 
 const now = new Date();
@@ -107,11 +110,16 @@ for (const s of scenarios) {
     const golden = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : null;
     const same = golden && !outcome.error && isDeepStrictEqual(outcome.screen, golden.screen)
       && (COMPARE === 'screen' || isDeepStrictEqual(outcome.database, golden.database));
-    const expected = EXPECTED_CHANGES.includes(s.id);
+    let expected = EXPECTED_CHANGES.includes(s.id);
+    // With approved results for the change, the changed screen must match them exactly.
+    const approvedFile = EXPECTED_DIR ? join(EXPECTED_DIR, `${s.id}.json`) : '';
+    if (!same && expected && !outcome.error && approvedFile && existsSync(approvedFile)) {
+      expected = isDeepStrictEqual(outcome.screen, JSON.parse(readFileSync(approvedFile, 'utf8')).screen);
+    }
     if (!same) writeFileSync(join(SCREENS_DIR, `mismatch-${s.id}.json`), JSON.stringify(outcome, null, 2) + '\n');
     if (!same && !expected) failed++;
     if (!same && expected && !outcome.error) changed++;
-    const verdict = same ? 'PASS' : expected && !outcome.error ? 'CHANGED (expected)' : 'FAIL';
+    const verdict = same ? 'PASS' : expected && !outcome.error ? (approvedFile ? 'CHANGED (as approved)' : 'CHANGED (expected)') : 'FAIL';
     if (expected && outcome.error) failed++;
     console.log(`${verdict}  ${s.id}  ${s.title}${outcome.error ? `: ${outcome.error}` : ''}`);
   }

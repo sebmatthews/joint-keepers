@@ -1,6 +1,6 @@
 # The Golden Master Approach
 
-Status: draft, 27 September 2026. The legacy half and the checks after the law change are built and proved. The modern half is written for the modernisation stage.
+Status: draft, 29 September 2026. The legacy half and the checks after the law change are built and proved. The modern half is written for the modernisation stage.
 
 ## What It Is
 
@@ -47,8 +47,12 @@ The legacy app has a validation rule copied into two pages with small difference
 The new-law stage changes the database's structure on purpose, through the migration in db/migrations. On a branch with a migration, the build therefore does three things instead of recording:
 
 1. Checks the migration: every animal still has exactly its old keeper, now as primary, dated from the law's commencement, 1 October 2026 (`tools/check-migration.mjs`).
-2. Runs the twelve original scenarios and compares what the screen shows with the recorded golden results. The database is not compared, because its structure has changed by design. The animal page (scenario S04) is expected to change, because the law adds its keepers table; every other scenario must match exactly.
-3. Records six scenarios for the law, J01 to J06, in `golden/scenarios-joint-keepers.json`. Once a new-law result is saved as the new-law backup, these recordings become the standard the modernisation stage must match.
+2. Runs the twelve original scenarios and compares what the screen shows with the recorded golden results. The database is not compared, because its structure has changed by design. The animal page (scenario S04) is expected to change, because the law adds its keepers table, and it must then match the approved new-law result in `golden/results-new-law/S04.json` exactly; every other scenario must match the original results exactly.
+3. Runs the six scenarios for the law, J01 to J06, in `golden/scenarios-joint-keepers.json`, and compares each screen with its approved result in `golden/results-new-law`.
+
+The approved new-law results come from the build of the new-law backup (build 36566974237, 29 September 2026, on Cosine's passing run replayed onto main), checked by hand against the law document. They are also the standard the modernisation stage must match.
+
+Why the animal page is checked against an approved result: in the first rehearsal (29 September 2026), Cosine's change left the keepers table off the animal page. Accepting any change to that page let it through; only the add-a-keeper scenarios caught it.
 
 Keepers added through the screens are dated the day they are added, so the runner replaces today's date with '<today>' in everything it records or compares.
 

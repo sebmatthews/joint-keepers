@@ -132,16 +132,19 @@ jobs:
               } else {
                 # The legacy app after the joint keepers change: the original scenarios must show
                 # the same screens as the recorded golden master, apart from the animal page, which
-                # the law changes on purpose; then the law's own scenarios are recorded.
+                # the law changes on purpose and which must then match the approved new-law result;
+                # then the law's own scenarios must match their approved results, screen by screen.
                 $env:MODE = 'compare'
                 $env:COMPARE = 'screen'
                 $env:EXPECTED_CHANGES = 'S04'
+                $env:EXPECTED_DIR = "$env:GITHUB_WORKSPACE\golden\results-new-law"
                 $env:RESULTS_DIR = "$env:GITHUB_WORKSPACE\golden\results"
                 node --no-warnings run.mjs
                 $checkExit = $LASTEXITCODE
-                $env:MODE = 'record'
+                $env:EXPECTED_CHANGES = ''
+                $env:EXPECTED_DIR = ''
                 $env:SCENARIOS = 'scenarios-joint-keepers.json'
-                $env:RESULTS_DIR = "$env:GITHUB_WORKSPACE\build\results-joint-keepers"
+                $env:RESULTS_DIR = "$env:GITHUB_WORKSPACE\golden\results-new-law"
                 node --no-warnings run.mjs
                 if ($LASTEXITCODE -ne 0) { $checkExit = $LASTEXITCODE }
               }
@@ -204,14 +207,6 @@ jobs:
         with:
           name: golden-results
           path: golden/results/*.json
-          if-no-files-found: warn
-
-      - name: Upload joint keepers results
-        if: always() && env.HAS_MIGRATIONS == 'true'
-        uses: actions/upload-artifact@v7
-        with:
-          name: golden-results-joint-keepers
-          path: build/results-joint-keepers/*.json
           if-no-files-found: warn
 
       - name: Upload diagnostics

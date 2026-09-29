@@ -10,7 +10,7 @@ Status: in build. The demo changes the legacy app to meet a new law (the new-law
 
 - `legacy/RegisterLivestock`: the legacy app, VB.NET Web Forms on the .NET Framework, with its flaws left in on purpose
 - `db`: the database structure, the invented seed data and the pristine database
-- `golden`: the golden master scenarios (including the joint keepers scenarios), the runner and the recorded results
+- `golden`: the golden master scenarios (including the joint keepers scenarios), the runner, the recorded results of the original app, and the approved results after the new law (`golden/results-new-law`)
 - `demo/screens/legacy`: screenshots of the legacy app, taken on GitHub's Windows build machine
 - `demo/screens/joint-keepers`: screenshots of the legacy app after the joint keepers change, from Cosine's passing run of the new-law brief
 - `demo.sh`: the demo command presenters run: `./demo.sh check`, `start`, `publish`, `backup` and `finish`

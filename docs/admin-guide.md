@@ -56,6 +56,8 @@ A backup builds with the workflow as it is in the tagged commit, so the tagged c
 
 If the workflows or the demo command change later, save the backup again the same way, moving the tag with `git tag -f checkpoint/new-law` and `git push -f origin checkpoint/new-law`. Pushing the tag starts one extra build, which checks but does not deploy; that is expected.
 
+The approved new-law results in `golden/results-new-law` were taken from the backup's build on 29 September 2026. If the law document changes, record them again from a hand-checked build of the new backup, and commit them.
+
 ## Tidy Up Old Demo Branches
 
 Every run of the demo leaves a branch on GitHub named `demo/live-...` or `demo/backup-...`. They do no harm. To remove them, delete them from the Branches page of the repository on GitHub.
