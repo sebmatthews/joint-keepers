@@ -1,6 +1,6 @@
 # Demo Guide
 
-Status: draft, 27 September 2026. Standard track only; the shallow and deep tracks are sketched at the end. Built and proved: the legacy app and its screenshots, the golden master, hop 1's law, prompt and checks, and hosting on Azure. Not built yet: hop 2, the demo command, the code page and the recordings; they are marked. Screenshots are in `demo/screens/legacy`, fetched from the latest build with `tools/fetch-run.sh`.
+Status: draft, 29 September 2026. Standard track only; the shallow and deep tracks are sketched at the end. Built and proved: the legacy app and its screenshots, the golden master, hop 1's law, prompt and checks, and hosting on Azure. Not built yet: hop 2, the demo command, the code page and the recordings; they are marked, and until the demo command exists the steps it will do are written out here by hand. Screenshots of the original app are in `demo/screens/legacy`, fetched from the latest build with `tools/fetch-run.sh`. Screenshots of the app after hop 1 are in `demo/screens/joint-keepers`, from Cosine's passing run of the hop 1 prompt on 27 September 2026.
 
 ## The Story in One Breath
 
@@ -8,7 +8,19 @@ A government service built fifteen years ago still works, but nobody wants to to
 
 ## Before You Start
 
-Start the web app in the Azure portal and open its address a minute early, to wake it. Run the demo command's pre-flight check and reset to the start (not built yet). Open Terminal in the repository, the browser, and this guide. Have the recordings of each step to hand.
+Set up your Mac first with the install guide. Then, before each demo:
+
+1. Start the web app in the Azure portal.
+2. Put the original app back on Azure. The address serves whatever was last built from main or a branch starting 'demo/', so after a previous run it may be showing the changed app. In Terminal, in the repository, run `gh workflow run legacy.yml --ref main`, wait about a minute and a half, plus any wait for a GitHub machine to become free, then open the address. This works because main has no database migrations, so it always builds the original app. Open an animal: the original app shows a single Keeper line and no Keepers table.
+3. Start a fresh branch for this run from the latest main. Its name must start with 'demo/', or the build will check the change but not put it on Azure:
+
+        git switch main
+        git pull
+        git switch -c demo/live-$(date +%d%m-%H%M)
+
+4. Clear Cosine's saved memories from any earlier run. Not written yet: where Cosine keeps them has not been found.
+
+Open Terminal in the repository, the browser, and this guide. Have the fallback screenshots, and the recordings of each step once they exist, to hand. The demo command's pre-flight check and reset will replace steps 2 to 4 (not built yet).
 
 ## Running Order
 
@@ -49,15 +61,25 @@ Show: Part A of `docs/joint-keepers-law.md`, the Regulations.
 
 Say: 'Parliament has passed the Livestock Keeping (Joint Keepers) Regulations 2026. They are fictional. From 1 October an animal can have up to four keepers, one of them the primary keeper, and every existing keeper becomes a primary keeper. The system has to be ready before then. And this is the old system: we are changing fifteen-year-old code, not replacing it.'
 
-Give Cosine the hop 1 prompt: 'Carry out the brief in prompts/hop-1-joint-keepers.md'. While it works, point out that it reads the law, finds where keepers are used in the old pages, writes a migration for the database, and keeps to the old style rather than rewriting everything.
+Start Cosine in the repository, on the demo/ branch made before the demo, and give it the hop 1 prompt: 'Carry out the brief in prompts/hop-1-joint-keepers.md'. While it works, point out that it reads the law, finds where keepers are used in the old pages, writes a migration for the database, and keeps to the old style rather than rewriting everything.
 
 ## Proof After Hop 1 (6:00 to 7:00)
 
-Push the change and start the build (the demo command will do both; not built yet). In about a minute and a half the Windows build machine compiles the changed old code, checks every existing animal kept its keeper as primary, runs the original scenarios (all the same except the animal page, which the law changes on purpose), runs the six new scenarios for the law, and deploys the changed app to Azure.
+Send the change to GitHub and start the build (the demo command will do this; not built yet). If Cosine has not committed its work itself, commit it first, then push:
+
+    git add -A
+    git commit -m "Joint Keepers Regulations"
+    git push -u origin HEAD
+
+Wait about ten seconds, then check a build has started for your branch with `gh run list --workflow legacy.yml --branch $(git branch --show-current) --limit 1`. If nothing is listed under the heading line, start the build yourself with `gh workflow run legacy.yml --ref $(git branch --show-current)`. To follow it, run `gh run watch`, choose the line showing your branch and press Enter; it shows each step as it finishes.
+
+In about a minute and a half, plus any wait for a GitHub machine, the Windows build machine checks that every existing animal kept its keeper as primary after the database migration, compiles the changed old code and checks it starts, runs the original scenarios and compares their screens (all the same except the animal page, which the law changes on purpose), runs the six new scenarios for the law and records their results, deploys the changed app to Azure, and checks the live address works.
 
 Then open the changed app on its Azure address, open an animal, and add a second keeper.
 
-Say: 'Old code, new law, and proof that everything the law did not touch still behaves exactly as before.'
+If the build or the deploy fails, show the screenshots in `demo/screens/joint-keepers` instead: `04-animal-details.png` (an existing keeper, now primary from 1 October), `j01-register-two-keepers.png`, `j03-add-keeper.png` and `j05-fifth-keeper-refused.png` (the law's limit of four keepers).
+
+Say: 'Old code, new law, and proof that every screen the law did not touch still shows exactly what it showed before, and that every keeper's record came through the change.'
 
 ## Hop 2: Modernise (7:00 to 10:00)
 
@@ -75,11 +97,11 @@ Say: 'Every step the agent took was a change a person reviewed and approved. The
 
 ## Afterwards
 
-Reset to the start (not built yet). Stop the web app in the Azure portal.
+Put the original app back on Azure with `gh workflow run legacy.yml --ref main`, so the next demo starts from the old version (the demo command's reset will do this; not built yet). Wait for it to finish, then stop the web app in the Azure portal.
 
 ## If Something Goes Wrong
 
-Not built yet. The demo command will jump to the checkpoint for any section, and each section will have its recording. The rule: never debug live. Say 'let me show you the one we ran earlier', and move on.
+The rule: never debug live. Until recordings exist, the fallback for the proof after hop 1 is the screenshots in `demo/screens/joint-keepers`, and for the scene the screenshots in `demo/screens/legacy`. Not built yet: the demo command will jump to the checkpoint for any section, and each section will have its recording. Say 'let me show you the one we ran earlier', and move on.
 
 ## Shallow and Deep Tracks
 
