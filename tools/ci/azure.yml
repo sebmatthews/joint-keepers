@@ -1,0 +1,70 @@
+# Starts or stops the hosted legacy app on Azure App Service, so presenters never need
+# the Azure portal. Started by the demo command ('./demo.sh ready' and './demo.sh reset'),
+# or by hand from the Actions tab. Needs the AZURE_CREDENTIALS secret and the
+# AZURE_RESOURCE_GROUP variable described in docs/admin-guide.md, as well as the
+# AZURE_WEBAPP_NAME and AZURE_WEBAPP_URL variables the legacy workflow already uses.
+name: Azure app
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Start or stop the hosted app'
+        required: true
+        type: choice
+        options:
+          - start
+          - stop
+
+permissions:
+  contents: read
+
+jobs:
+  azure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
+      AZURE_WEBAPP_URL: ${{ vars.AZURE_WEBAPP_URL }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      ACTION: ${{ inputs.action }}
+    steps:
+      - name: Check the Azure settings exist
+        env:
+          HAS_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS != '' }}
+        run: |
+          missing=""
+          [ "$HAS_CREDENTIALS" = "true" ] || missing="$missing AZURE_CREDENTIALS(secret)"
+          [ -n "$AZURE_WEBAPP_NAME" ] || missing="$missing AZURE_WEBAPP_NAME"
+          [ -n "$AZURE_RESOURCE_GROUP" ] || missing="$missing AZURE_RESOURCE_GROUP"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing:$missing. See docs/admin-guide.md."
+            exit 1
+          fi
+
+      - name: Sign in to Azure
+        uses: azure/login@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: ${{ inputs.action == 'start' && 'Start the app' || 'Stop the app' }}
+        run: az webapp "$ACTION" --name "$AZURE_WEBAPP_NAME" --resource-group "$AZURE_RESOURCE_GROUP"
+
+      # The free tier sleeps when idle, so after starting, ask for the home page until it answers.
+      - name: Wake the app
+        if: inputs.action == 'start' && env.AZURE_WEBAPP_URL != ''
+        run: |
+          for i in $(seq 1 20); do
+            code=$(curl -s -L -o /dev/null -w '%{http_code}' --max-time 15 "$AZURE_WEBAPP_URL" || true)
+            echo "Attempt $i: HTTP $code"
+            case "$code" in 2*) exit 0 ;; esac
+            sleep 5
+          done
+          echo "::error::The app did not answer after starting."
+          exit 1
+
+      - name: Report
+        run: |
+          state=$(az webapp show --name "$AZURE_WEBAPP_NAME" --resource-group "$AZURE_RESOURCE_GROUP" --query state -o tsv)
+          echo "App state: $state"
+          echo "App address: $AZURE_WEBAPP_URL"

@@ -22,4 +22,4 @@ Show dates as DD/MM/YYYY.
 
 ## Never Change
 
-db/livestock.db, or anything in golden/, docs/, prompts/, tools/ or .github/, unless the task explicitly says so.
+db/livestock.db, demo.sh, or anything in golden/, docs/, prompts/, tools/, demo/ or .github/, unless the task explicitly says so.
