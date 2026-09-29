@@ -14,9 +14,10 @@ Status: in build. The demo changes the legacy app to meet a new law (hop 1), the
 - `demo/screens/legacy`: screenshots of the legacy app, taken on GitHub's Windows build machine
 - `demo/screens/joint-keepers`: screenshots of the legacy app after the joint keepers change, from Cosine's passing run of the hop 1 prompt
 - `demo.sh`: the demo command presenters run: `./demo.sh check`, `ready`, `prompt 1`, `prove`, `jump` and `reset`
+- `.github/workflows`: the legacy app's build, and the workflow that starts and stops the Azure app
 - `docs`: the joint keepers law, the install guide and demo guide for presenters, the admin guide, the golden master approach and the Azure setup
 - `prompts`: the briefs given to the coding agent
 - `AGENTS.md`: standing notes for any coding agent working in the repository
-- `tools`: the build's checks, the migration tools, the script that fetches results and screenshots from GitHub, and in `tools/ci` workflows waiting to be moved into `.github/workflows`
+- `tools`: the build's checks, the migration tools, and the script that fetches results and screenshots from GitHub
 
 Copyright © 2026 Seb Matthews. All rights reserved.

@@ -7,11 +7,7 @@ Status: draft, 29 September 2026. For Seb: the one-off and occasional steps behi
 The demo command, `demo.sh`, sits at the top of the repository and must stay executable, which Git records; presenters get it when they download the demo.
 
 
-The build workflows live in `.github/workflows`. Sessions working through Cowork cannot write to that folder, so a new or changed workflow is left in `tools/ci` to move by hand:
-
-    mv tools/ci/azure.yml .github/workflows/azure.yml
-
-Commit and push it to main. A workflow started by the demo command must be on main before it can be started on any branch.
+The build workflows live in `.github/workflows`. Cowork sessions can write there by moving a file in with the shell on the Mac, though not with their file-copying tool; they then commit it. A workflow started by the demo command must be on main on GitHub before it can be started on any branch, so push after any workflow change.
 
 ## Let GitHub Start and Stop the Azure App
 
