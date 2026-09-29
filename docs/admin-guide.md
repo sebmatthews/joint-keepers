@@ -40,25 +40,25 @@ In the repository on GitHub, open Settings, then Collaborators, select Add peopl
 
 Presenters need nothing on Azure.
 
-## Choose a Checkpoint
+## Save a Backup
 
-`./demo.sh jump hop1` puts the app as it is after hop 1 on Azure, from a Git tag named `checkpoint/hop1`. The tag does not exist until you choose which run is the reference.
+`./demo.sh backup new-law` puts the app as it is after the law change live, from a Git tag named `checkpoint/new-law`. The tag does not exist until you choose which run is the reference. `./demo.sh backup original` needs no tag: it builds main.
 
-A jump builds with the workflow as it is in the tagged commit, so the checkpoint must sit on top of the current main, not on the branch Cosine's run was made on. To make it from Cosine's passing run (4236345, on try/cosine-2), replay that change onto main and tag the result:
+A backup builds with the workflow as it is in the tagged commit, so the tagged commit must sit on top of the current main, not on the branch Cosine's run was made on. To make it from Cosine's passing run (4236345, on try/cosine-2), replay that change onto main and tag the result:
 
     git switch main
     git pull
-    git switch -c checkpoint-hop1
+    git switch -c checkpoint-new-law
     git cherry-pick 4236345
-    git tag checkpoint/hop1
-    git push origin checkpoint/hop1
+    git tag checkpoint/new-law
+    git push origin checkpoint/new-law
     git switch main
 
-If the workflows or the demo command change later, make the checkpoint again the same way, moving the tag with `git tag -f checkpoint/hop1` and `git push -f origin checkpoint/hop1`. Pushing the tag starts one extra build, which checks but does not deploy; that is expected.
+If the workflows or the demo command change later, save the backup again the same way, moving the tag with `git tag -f checkpoint/new-law` and `git push -f origin checkpoint/new-law`. Pushing the tag starts one extra build, which checks but does not deploy; that is expected.
 
 ## Tidy Up Old Demo Branches
 
-Every run of the demo leaves a branch on GitHub named `demo/live-...` or `demo/jump-...`. They do no harm. To remove them, delete them from the Branches page of the repository on GitHub.
+Every run of the demo leaves a branch on GitHub named `demo/live-...` or `demo/backup-...`. They do no harm. To remove them, delete them from the Branches page of the repository on GitHub.
 
 ## Sources
 

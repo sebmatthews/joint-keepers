@@ -1,5 +1,5 @@
 # Starts or stops the hosted legacy app on Azure App Service, so presenters never need
-# the Azure portal. Started by the demo command ('./demo.sh ready' and './demo.sh reset'),
+# the Azure portal. Started by the demo command ('./demo.sh start' and './demo.sh finish'),
 # or by hand from the Actions tab. Needs the AZURE_CREDENTIALS secret and the
 # AZURE_RESOURCE_GROUP variable described in docs/admin-guide.md, as well as the
 # AZURE_WEBAPP_NAME and AZURE_WEBAPP_URL variables the legacy workflow already uses.

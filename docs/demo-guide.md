@@ -1,6 +1,6 @@
 # Demo Guide
 
-Status: draft, 29 September 2026. Standard track only; the shallow and deep tracks are sketched at the end. Built and proved: the legacy app and its screenshots, the golden master, hop 1's law, prompt and checks, and hosting on Azure. Built but not yet run for real: the demo command, `./demo.sh`, which does every step that is not part of the story; until it has been run end to end, expect rough edges. Not built yet: hop 2, the code page and the recordings; they are marked. Screenshots of the original app are in `demo/screens/legacy`; screenshots of the app after hop 1 are in `demo/screens/joint-keepers`, from Cosine's passing run of the hop 1 prompt on 27 September 2026.
+Status: draft, 29 September 2026. Standard track only; the shallow and deep tracks are sketched at the end. Built and proved: the legacy app and its screenshots, the golden master, hop 1's law, prompt and checks, and hosting on Azure. Built: the demo command, `./demo.sh`, which does every step that is not part of the story. `./demo.sh start` and `./demo.sh finish` have been run for real (29 September 2026); `publish` and `backup` have not yet, so expect rough edges there. Not built yet: hop 2, the code page and the recordings; they are marked. Screenshots of the original app are in `demo/screens/legacy`; screenshots of the app after hop 1 are in `demo/screens/joint-keepers`, from Cosine's passing run of the hop 1 prompt on 27 September 2026.
 
 ## The Story in One Breath
 
@@ -10,9 +10,9 @@ A government service built fifteen years ago still works, but nobody wants to to
 
 Set up your Mac once with the install guide. Then, about ten minutes before each demo, open Terminal, go into the demo folder with `cd joint-keepers`, and run:
 
-    ./demo.sh ready
+    ./demo.sh start
 
-It checks your Mac, gets the latest code, starts the app on Azure, puts the original app back on it with a fresh database, and starts a fresh copy of the code for this run. It takes up to five minutes and ends by printing the app's address. Open the address in the browser.
+It checks your Mac, gets the latest code, starts the app on Azure, puts the original app back on it with a fresh database, and starts a fresh copy of the code for this run. It takes about three minutes and ends by printing the app's address and the words to type into Cosine. Open the address in the browser.
 
 Not automated yet: clearing Cosine's saved memories from earlier runs, because where Cosine keeps them has not been found.
 
@@ -67,21 +67,21 @@ Say as you type: 'The requirements are already written down as a brief in the re
 
 When Cosine has finished, run:
 
-    ./demo.sh prove
+    ./demo.sh publish
 
-It saves Cosine's change, sends it to GitHub, starts the build, and shows each step as it finishes.
+It saves Cosine's change, sends it to GitHub, starts the build, and shows each step as it finishes. If everything passes, the changed app goes live on Azure.
 
 In about two minutes, plus any wait for a GitHub machine, the Windows build machine checks that every existing animal kept its keeper as primary after the database migration, compiles the changed old code and checks it starts, runs the original scenarios and compares their screens (all the same except the animal page, which the law changes on purpose), runs the six new scenarios for the law and records their results, deploys the changed app to Azure, and checks the live address works.
 
 Then open the changed app on its Azure address, open an animal, and add a second keeper.
 
-If the build fails, the demo command says so and opens the screenshots in `demo/screens/joint-keepers`. Show those instead: `04-animal-details.png` (an existing keeper, now primary from 1 October), `j01-register-two-keepers.png`, `j03-add-keeper.png` and `j05-fifth-keeper-refused.png` (the law's limit of four keepers).
+If the build fails, the demo command says so and opens the screenshots in `demo/screens/joint-keepers`. Show those straight away, and if there is time, run `./demo.sh backup new-law` to put a saved, working version of the changed app live in about two minutes. The screenshots: `04-animal-details.png` (an existing keeper, now primary from 1 October), `j01-register-two-keepers.png`, `j03-add-keeper.png` and `j05-fifth-keeper-refused.png` (the law's limit of four keepers).
 
 Say: 'Old code, new law, and proof that every screen the law did not touch still shows exactly what it showed before, and that every keeper's record came through the change.'
 
 ## Hop 2: Modernise (7:00 to 10:00)
 
-Not built yet. Give Cosine the hop 2 prompt. While it works, point out its task list and that every step is a separate change that can be inspected or undone. Whether it modernises all four screens live, or one live with three done earlier, is decided by rehearsal.
+Not built yet. Point Cosine at the hop 2 brief, in fixed words as for hop 1. While it works, point out its task list and that every step is a separate change that can be inspected or undone. Whether it modernises all four screens live, or one live with three done earlier, is decided by rehearsal.
 
 ## Proof After Hop 2 (10:00 to 11:00)
 
@@ -95,11 +95,11 @@ Say: 'Every step the agent took was a change a person reviewed and approved. The
 
 ## Afterwards
 
-Run `./demo.sh reset`. It stops the app on Azure, which is deliberately insecure and must not be left running. The next `./demo.sh ready` puts the original app back.
+Run `./demo.sh finish`. It stops the app on Azure, which is deliberately insecure and must not be left running. The next `./demo.sh start` puts the original app back.
 
 ## If Something Goes Wrong
 
-The rule: never debug live. Say 'let me show you the one we ran earlier', and move on. Until recordings exist, the fallback for the proof after hop 1 is the screenshots in `demo/screens/joint-keepers`, and for the scene the screenshots in `demo/screens/legacy`. `./demo.sh jump hop1` puts the app as it is after hop 1 on Azure in about two minutes, once Seb has chosen that checkpoint; `./demo.sh jump start` puts the original back. Each section will also have its recording (not made yet).
+The rule: never debug live. Say 'let me show you the one we ran earlier', and move on. Until recordings exist, the fallback for the proof after hop 1 is the screenshots in `demo/screens/joint-keepers`, and for the scene the screenshots in `demo/screens/legacy`. The demo command keeps backups: versions of the app saved from checked rehearsals. `./demo.sh backup new-law` puts the app as it is after the law change live in about two minutes, once Seb has saved that backup; `./demo.sh backup original` puts the original app back. A `backup modern` will follow when hop 2 is built. Each section will also have its recording (not made yet).
 
 ## Shallow and Deep Tracks
 

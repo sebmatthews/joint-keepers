@@ -1,12 +1,13 @@
 #!/bin/bash
 # The Joint Keepers demo command. Run it from Terminal in the joint-keepers folder:
 #
-#   ./demo.sh check      check this Mac is ready, without changing anything
-#   ./demo.sh ready      get everything to the starting point before a demo
-#                        (then point Cosine at the brief: see the demo guide)
-#   ./demo.sh prove      send Cosine's change to GitHub, build it, check it and put it on Azure
-#   ./demo.sh jump NAME  go straight to a checkpoint: 'start', or 'hop1' once it is chosen
-#   ./demo.sh reset      after a demo: stop the app on Azure
+#   ./demo.sh check            once, after setting up the Mac: check it is ready
+#   ./demo.sh start            before the demo: get everything to the starting point
+#                              (then point Cosine at the brief: see the demo guide)
+#   ./demo.sh publish          when Cosine has finished: check its change and put it live
+#   ./demo.sh backup original  if things go wrong: put the original app live
+#   ./demo.sh backup new-law   if things go wrong: put the app after the law change live
+#   ./demo.sh finish           after the demo: stop the app on Azure
 #
 # Every build and check runs on GitHub. This Mac only needs Git, the GitHub command
 # line tool (gh), signed in, and Cosine.
@@ -145,11 +146,11 @@ cmd_check() {
   say "This Mac is ready."
 }
 
-cmd_ready() {
+cmd_start() {
   local branch
   check_mac
   say "Getting the code to the starting point"
-  set_aside_changes ready
+  set_aside_changes start
   git switch -q main 2>/dev/null || fail "could not switch to main."
   git pull -q --ff-only 2>/dev/null || fail "could not get the latest code from GitHub."
   ok "On the latest main"
@@ -166,10 +167,10 @@ cmd_ready() {
   echo "Next: start Cosine in this folder and type: Carry out the brief in prompts/hop-1-joint-keepers.md"
 }
 
-cmd_prove() {
+cmd_publish() {
   local branch head id
   branch=$(git branch --show-current)
-  case "$branch" in demo/live-*) ;; *) fail "run './$SCRIPT_NAME ready' first; you are not on this run's branch." ;; esac
+  case "$branch" in demo/live-*) ;; *) fail "run './$SCRIPT_NAME start' first; you are not on this run's branch." ;; esac
 
   if [ -n "$(git status --porcelain)" ]; then
     { git add -A && git commit -q -m "Changes made by Cosine"; } || fail "could not save Cosine's changes."
@@ -199,40 +200,41 @@ cmd_prove() {
   return 1
 }
 
-# Jumping never changes the files on this Mac: the checkpoint is sent to GitHub as a
-# new branch and built there.
-cmd_jump() {
+# A backup is a version of the app saved from a checked rehearsal (a Git tag named
+# checkpoint/NAME). Putting it live never changes the files on this Mac: the saved
+# version is sent to GitHub as a new branch and built there.
+cmd_backup() {
   local name=${1:-} tag branch sha id
   case "$name" in
-    start) make_sure_app_is_running; build main "the original app"; say "The original app is on Azure."; return 0 ;;
-    hop1)  tag=checkpoint/hop1 ;;
-    *) fail "say which checkpoint: './$SCRIPT_NAME jump start' or './$SCRIPT_NAME jump hop1'." ;;
+    original) make_sure_app_is_running; build main "the original app"; say "The original app is live."; return 0 ;;
+    new-law)  tag=checkpoint/new-law ;;
+    *) fail "say which backup: './$SCRIPT_NAME backup original' or './$SCRIPT_NAME backup new-law'." ;;
   esac
-  git fetch -q --force origin "refs/tags/$tag:refs/tags/$tag" 2>/dev/null || fail "the '$name' checkpoint has not been chosen yet."
-  sha=$(git rev-parse "refs/tags/$tag^{commit}") || fail "the '$name' checkpoint could not be read."
+  git fetch -q --force origin "refs/tags/$tag:refs/tags/$tag" 2>/dev/null || fail "the '$name' backup has not been saved yet. Tell Seb."
+  sha=$(git rev-parse "refs/tags/$tag^{commit}") || fail "the '$name' backup could not be read."
   make_sure_app_is_running
-  branch="demo/jump-$name-$(stamp)"
-  git push -q origin "$sha:refs/heads/$branch" || fail "could not send the checkpoint to GitHub."
-  say "Building the '$name' checkpoint on GitHub (about two minutes)"
+  branch="demo/backup-$name-$(stamp)"
+  git push -q origin "$sha:refs/heads/$branch" || fail "could not send the backup to GitHub."
+  say "Building the '$name' backup on GitHub (about two minutes)"
   id=$(run_for_commit "$branch" "$sha") || id=$(start_workflow "$LEGACY_WORKFLOW" "$branch") || exit 1
-  follow_run "$id" || fail "the checkpoint build failed. Tell Seb."
-  deployed_in "$id" || fail "the checkpoint build passed but did not reach Azure. Tell Seb."
-  say "The '$name' checkpoint is on Azure."
+  follow_run "$id" || fail "the backup build failed. Tell Seb."
+  deployed_in "$id" || fail "the backup build passed but did not reach Azure. Tell Seb."
+  say "The '$name' backup is live."
 }
 
-cmd_reset() {
+cmd_finish() {
   check_mac
-  set_aside_changes reset
+  set_aside_changes finish
   git switch -q main || fail "could not switch to main."
   azure stop
-  say "Done. The Azure app is stopped. './$SCRIPT_NAME ready' puts the original app back before the next demo."
+  say "Done. The Azure app is stopped. './$SCRIPT_NAME start' puts the original app back before the next demo."
 }
 
 case "${1:-}" in
   check)  cmd_check ;;
-  ready)  cmd_ready ;;
-  prove)  cmd_prove ;;
-  jump)   cmd_jump "${2:-}" ;;
-  reset)  cmd_reset ;;
-  *) sed -n '2,12p' "$SCRIPT_NAME" | sed 's/^# \{0,1\}//'; exit 1 ;;
+  start)   cmd_start ;;
+  publish) cmd_publish ;;
+  backup)  cmd_backup "${2:-}" ;;
+  finish)  cmd_finish ;;
+  *) sed -n '2,13p' "$SCRIPT_NAME" | sed 's/^# \{0,1\}//'; exit 1 ;;
 esac
