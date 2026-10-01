@@ -1,6 +1,6 @@
 # The Golden Master Approach
 
-Status: draft, 29 September 2026. The legacy half and the checks after the law change are built and proved. The modern half is written for the modernisation stage.
+Status: 29 September 2026. The recording of the original app and the checks after the law change are in use. The sections on a modern app describe the future expansion.
 
 ## What It Is
 
@@ -21,22 +21,22 @@ After each scenario, two things are recorded:
 
 The legacy app's recording is the golden result. It is made on GitHub's Windows build machine, because the legacy app only runs on Windows, and saved in `golden/results`, one file per scenario.
 
-The demo changes the legacy app to meet a new law first (the new-law stage), then modernises it (the modernisation stage). How the checks work after the law change is set out below. After modernising, the scenarios run against the modern app and every result must match exactly. Any difference, however small, is a failure.
+The demo changes the legacy app to meet a new law. How the checks work after the law change is set out below. The same approach carries the future expansion: if the service is modernised, the scenarios run against the modern app and every result must match exactly. Any difference, however small, is a failure.
 
 ## Two Apps, One Set of Scenarios
 
-The scenarios say what to do, not which buttons to press. A driver for each app turns the steps into clicks and typing on that app's screens. The legacy driver is `golden/drivers/legacy.mjs`. The modern driver is written for the modern app in the modernisation stage.
+The scenarios say what to do, not which buttons to press. A driver for each app turns the steps into clicks and typing on that app's screens. The legacy driver is `golden/drivers/legacy.mjs`. A modern app would get a driver of its own, alongside it.
 
-## What the Modern App Must Keep
+## What a Modern App Would Have to Keep
 
-Because the comparison is exact, the modern app built in the modernisation stage must keep, word for word and character for character:
+Because the comparison is exact, a modern app built in the future expansion would have to keep, word for word and character for character:
 
 1. Every message the legacy app shows.
 2. Dates shown as DD/MM/YYYY.
 3. The same columns, in the same order, in each table on screen.
-4. The same database tables and rows, since the modernisation stage does not change the database.
+4. The same database tables and rows, since modernising would not change the database.
 
-These go into the modernisation brief and AGENTS.md. The look of the screens is free to change, which is the point of modernising.
+These would go into a modernisation brief and AGENTS.md. The look of the screens would be free to change, which is the point of modernising.
 
 ## What It Does Not Cover
 
@@ -50,7 +50,7 @@ The new-law stage changes the database's structure on purpose, through the migra
 2. Runs the twelve original scenarios and compares what the screen shows with the recorded golden results. The database is not compared, because its structure has changed by design. The animal page (scenario S04) is expected to change, because the law adds its keepers table, and it must then match the approved new-law result in `golden/results-new-law/S04.json` exactly; every other scenario must match the original results exactly.
 3. Runs the six scenarios for the law, J01 to J06, in `golden/scenarios-joint-keepers.json`, and compares each screen with its approved result in `golden/results-new-law`.
 
-The approved new-law results come from the build of the new-law backup (29 September 2026, on Cosine's passing run replayed onto main), checked by hand against the law document. They are also the standard the modernisation stage must match.
+The approved new-law results come from the build of the new-law backup (29 September 2026, on Cosine's passing run replayed onto main), checked by hand against the law document. They would also be the standard a modernised app must match.
 
 Why the animal page is checked against an approved result: in the first rehearsal (29 September 2026), Cosine's change left the keepers table off the animal page. Accepting any change to that page let it through; only the add-a-keeper scenarios caught it.
 
@@ -60,4 +60,4 @@ Keepers added through the screens are dated the day they are added, so the runne
 
 On GitHub, the 'Legacy app' workflow runs on every push that touches the legacy app, the database, the scenarios or the tools. To bring the latest results and screenshots down into the repository, run `tools/fetch-run.sh` from the top of the repository, then commit what it changed. A push that only adds an existing commit under a new branch name does not start a build; start it with `gh workflow run legacy.yml --ref <branch>`.
 
-On a Mac, once the modern app exists, the check is run from the `golden` folder with `npm run compare`, with `APP_URL` and `APP_DB` set to the modern app's address and database file, and `DRIVER=modern`. The demo command, when it is built, will do this in one step.
+The runner can also be pointed at another app: from the `golden` folder, `npm run compare` with `APP_URL` and `APP_DB` set to that app's address and database file, and `DRIVER` set to its driver.

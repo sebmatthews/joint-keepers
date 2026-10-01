@@ -1,10 +1,10 @@
 # Joint Keepers
 
-A repeatable live demo of AI-augmented code generation, run through Cosine CLI (Cosine's command line coding agent). It modernises a legacy government system and then adds a feature required by a change in legislation.
+A repeatable live demo of AI-augmented code generation, run through Cosine CLI (Cosine's command line coding agent). The agent changes a legacy government system to meet a change in legislation, and every change is proved against the old system's recorded behaviour.
 
 The service in the demo, 'Register livestock', is fictional. It is badged only as a UK Government demo service, does not represent any real department or system, and the legislation it implements is invented for the demo.
 
-Status: in build. The demo changes the legacy app to meet a new law (the new-law stage), then modernises it (the modernisation stage). The legacy app, its database, the golden master and everything the new-law stage needs are built, and the new-law stage has passed its checks on an agent run. The demo command for presenters is built. The modernisation stage is not built yet.
+The demo runs for about ten minutes. Presenters run it with one command, `./demo.sh`, and the script is in `docs/demo-guide.md`. Future expansion: the same foundation supports a modernisation stage, in which the agent rewrites the changed service in modern technology and the same golden master proves the behaviour is unchanged.
 
 ## What Is Here
 

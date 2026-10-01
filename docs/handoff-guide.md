@@ -1,6 +1,6 @@
 # Joint Keepers Handoff Guide
 
-This guide sets up a complete, independent copy of the Joint Keepers demo under your own GitHub account and your own Microsoft Azure subscription, and then runs it. The demo comes to you as a zip file of the repository. Your copy starts from it, with a history of its own, and nothing in it depends on, or connects to, anywhere else. Follow the parts in order. Each part ends with a check, so you know it worked before you move on.
+This guide sets up a complete, independent copy of the Joint Keepers demo under your own GitHub account and your own Microsoft Azure subscription, and then runs it. The demo comes to you as a zip file of the repository. Your copy starts from it, with a history of its own, and nothing in it depends on, or connects to, anywhere else. Follow Parts 1 to 12 in order. Each ends with a check, so you know it worked before you move on. Part 13 describes how the demo can be expanded.
 
 ## Licence
 
@@ -12,12 +12,11 @@ The same statement is in the repository's README.
 
 ## What the Demo Is
 
-Joint Keepers is a 10 to 12 minute live demo of an AI coding agent, Cosine, changing a legacy government system. The system is a fictional livestock registration service called 'Register livestock', badged only 'UK Government Demo Service'. It is an old-style Microsoft app: VB.NET (Visual Basic .NET) Web Forms on the .NET Framework 4.8, with a SQLite database, and it only runs on Windows.
+Joint Keepers is a ten-minute live demo of an AI coding agent, Cosine, changing a legacy government system. The system is a fictional livestock registration service called 'Register livestock', badged only 'UK Government Demo Service'. It is an old-style Microsoft app: VB.NET (Visual Basic .NET) Web Forms on the .NET Framework 4.8, with a SQLite database, and it only runs on Windows.
 
-The demo has two stages:
+A fictional law, the Livestock Keeping (Joint Keepers) Regulations 2026, lets an animal have up to four keepers. On stage, the presenter points Cosine at a written brief, and Cosine changes the old code and the database to comply. GitHub then builds the changed app on a Windows machine, proves that nothing else changed, and puts it on a public web address for the audience.
 
-1. The new law. A fictional law, the Livestock Keeping (Joint Keepers) Regulations 2026, lets an animal have up to four keepers. On stage, the presenter points Cosine at a written brief, and Cosine changes the old code and the database to comply. GitHub then builds the changed app on a Windows machine, proves that nothing else changed, and puts it on a public web address for the audience.
-2. Modernisation. Cosine rewrites the changed app in modern technology without changing its behaviour. This stage is not built yet; the demo guide marks where it will go.
+Future expansion: the same foundation supports a modernisation stage, in which Cosine rewrites the changed app in modern technology and the same golden master, including the new law's scenarios, proves its behaviour is unchanged. Moving the database and then the architecture could follow, one step at a time. The presenter closes the demo with this, and Part 13 sets out how to build it.
 
 How the proof works: before any change, a 'golden master' recorded exactly what the old app shows in twelve everyday scenarios. After Cosine's change, the build replays those scenarios and compares the screens, checks the database migration kept every keeper, and checks six scenarios written from the law against approved results. Any difference fails the build.
 
@@ -246,13 +245,11 @@ The full script, with what to show and say in each section, is `docs/demo-guide.
 
 | Time | Section |
 | --- | --- |
-| 0:00 to 1:30 | The scene: the old service and its planted flaws |
-| 1:30 to 2:30 | The safety net: the golden master, and what it cannot see |
-| 2:30 to 6:00 | The new law, in the old code: Cosine at work |
-| 6:00 to 7:00 | Proof after the new law: the build, the checks, the changed app live |
-| 7:00 to 10:00 | Modernise (not built yet) |
-| 10:00 to 11:00 | Proof after modernising (not built yet) |
-| 11:00 to 12:00 | Close |
+| 0:00 to 2:00 | The scene: the old service and its planted flaws |
+| 2:00 to 3:00 | The safety net: the golden master, and what it cannot see |
+| 3:00 to 7:00 | The new law, in the old code: Cosine at work |
+| 7:00 to 9:00 | Proof after the new law: the build, the checks, the changed app live |
+| 9:00 to 10:00 | Close, and where it goes next |
 
 The presenter's steps:
 
@@ -272,6 +269,19 @@ The law itself, which the presenter shows on screen, is Part A of `docs/joint-ke
 - The free tier allows 60 minutes of processor time a day and sleeps after 20 minutes without visitors. `./demo.sh start` wakes it. Move to the Basic B1 plan only if a limit is actually hit; it is charged by the second for as long as the plan exists, even while the app is stopped.
 - `AZURE_CREDENTIALS` expires after a year by default; renew it as in Part 5 (steps 2 to 5 of GitHub's sign-in to Azure).
 - Every run leaves a branch on GitHub named `demo/live-...` or `demo/backup-...`. They do no harm; delete them from the repository's Branches page when you like, except the one your backup came from.
+
+## Part 13: Future Expansion, Modernisation
+
+The demo is built so a modernisation stage can follow the new law. What it would take:
+
+1. A modern version of the app, written by Cosine from a modernisation brief in `prompts/`, for example in ASP.NET Core Razor Pages (Microsoft's current web framework), which maps closely onto the old pages.
+2. A driver for the modern app in `golden/drivers`, so the existing scenarios can run against it.
+3. A build job that runs the modern app on GitHub, runs the original and new-law scenarios against it and compares them with the approved results in `golden/results-new-law`, checks the database structure is unchanged, and deploys it.
+4. A brief that says what must not change: every message word for word, dates as DD/MM/YYYY, the same table columns in the same order, and the same database. `docs/golden-master.md` lists these.
+5. A `backup modern` in `demo.sh`, saved from a passing rehearsal in the same way as the new-law backup.
+6. A section in the demo guide between the proof after the new law and the close, with the running order extended to suit.
+
+Rule for every later stage: never change the code and the database platform in the same step.
 
 ## Troubleshooting
 
