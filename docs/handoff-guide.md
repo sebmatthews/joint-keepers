@@ -1,6 +1,6 @@
 # Joint Keepers Handoff Guide
 
-This guide sets up a complete, independent copy of the Joint Keepers demo under your own GitHub account and your own Microsoft Azure subscription, and then runs it. Nothing in your copy depends on, or connects to, the repository you were given. Follow the parts in order. Each part ends with a check, so you know it worked before you move on.
+This guide sets up a complete, independent copy of the Joint Keepers demo under your own GitHub account and your own Microsoft Azure subscription, and then runs it. The demo comes to you as a zip file of the repository. Your copy starts from it, with a history of its own, and nothing in it depends on, or connects to, anywhere else. Follow the parts in order. Each part ends with a check, so you know it worked before you move on.
 
 ## Licence
 
@@ -34,7 +34,7 @@ How the proof works: before any change, a 'golden master' recorded exactly what 
 - An Azure subscription in which you are an Owner (or hold the User Access Administrator or Role Based Access Control Administrator role), and in which you may register applications. A personal account normally qualifies. If you have none, create one at https://azure.microsoft.com/free; a card is needed for identity checks. The free tier of Azure App Service costs nothing.
 - A Mac with an Apple silicon chip (M1 or later). Part 1 sets it up.
 - Cosine CLI, with an account to sign in with, and the model you intend to present with.
-- The address of the source repository you were given, called SOURCE_URL in this guide. If that repository is private, your GitHub account needs read access to it.
+- The zip file of the demo you were given, called ZIP_FILE in this guide. It contains the whole repository, including hidden folders such as `.github`, and no history.
 - About two hours for the whole set-up, most of it waiting for builds.
 
 Throughout, replace words in capitals, such as YOUR_ACCOUNT, with your own values. Commands are typed or pasted into the Terminal app exactly as shown.
@@ -60,21 +60,22 @@ Check: `git --version`, `gh auth status` and `cos --version` each answer without
 
 ## Part 2: Make Your Own Copy
 
-This makes a new repository with a single fresh commit. It carries none of the source repository's history and has no link back to it, so later changes there never reach you.
+This makes a new repository whose history starts with a single fresh commit of the zip's contents.
 
 1. In GitHub, select the + menu at the top right, then New repository. Choose your account or organisation as the owner, name it `joint-keepers`, and choose Private or Public (see the note below). Leave it empty: no README, no .gitignore, no licence. Select Create repository.
 2. On your Mac, in Terminal:
 
-        git clone --depth 1 SOURCE_URL joint-keepers
+        cd ~
+        unzip PATH_TO_ZIP_FILE
         cd joint-keepers
-        rm -rf .git
+        chmod +x demo.sh
         git init -b main
         git add -A
         git commit -m "Joint Keepers demo"
         git remote add origin https://github.com/YOUR_ACCOUNT/joint-keepers.git
         git push -u origin main
 
-   `rm -rf .git` removes the source repository's history and its address from your copy. The commit then starts a new history that is yours alone.
+   For PATH_TO_ZIP_FILE, you can type `unzip ` with a space and then drag ZIP_FILE from Finder into the Terminal window. The zip makes a folder called joint-keepers in your home folder. Unzip it in Terminal as shown rather than by double-clicking, so the hidden folders come out reliably. `chmod +x demo.sh` makes sure the demo command can be run; Git records that, so everyone who clones your repository gets it.
 
 Private or public: either works. In a private repository, GitHub's included build minutes apply (2,000 a month on the Free plan), and Windows machines cost more per minute than Linux ones; each full build takes two to three minutes. If your account has a spending limit of zero, builds stop when the included minutes run out. In a public repository, build minutes on standard machines are free, but anyone can read the code and the build logs, which include the hosted app's address.
 
