@@ -1,6 +1,6 @@
 # Demo Guide
 
-Status: draft, 29 September 2026. Standard track only; the shallow and deep tracks are sketched at the end. Built and proved: the legacy app and its screenshots, the golden master, the new law, its brief and checks, and hosting on Azure. Built: the demo command, `./demo.sh`, which does every step that is not part of the story. `./demo.sh start` and `./demo.sh finish` have been run for real (29 September 2026); `publish` and `backup` have not yet, so expect rough edges there. Not built yet: the modernisation stage, the code page and the recordings; they are marked. Screenshots of the original app are in `demo/screens/legacy`; screenshots of the app after the new law are in `demo/screens/joint-keepers`, from Cosine's passing run of the new-law brief on 27 September 2026.
+Status: draft, 29 September 2026. Standard track only; the shallow and deep tracks are sketched at the end. Built and proved: the legacy app and its screenshots, the golden master, the new law, its brief and checks, and hosting on Azure. Built: the demo command, `./demo.sh`, which does every step that is not part of the story. Every demo command has been run for real (29 September 2026). Not built yet: the modernisation stage, the code page and the recordings; they are marked. Screenshots of the original app are in `demo/screens/legacy`; screenshots of the app after the new law are in `demo/screens/joint-keepers`, from Cosine's passing run of the new-law brief on 27 September 2026.
 
 ## The Story in One Breath
 
@@ -99,7 +99,7 @@ Run `./demo.sh finish`. It stops the app on Azure, which is deliberately insecur
 
 ## If Something Goes Wrong
 
-The rule: never debug live. Say 'let me show you the one we ran earlier', and move on. Until recordings exist, the fallback for the proof after the new law is the screenshots in `demo/screens/joint-keepers`, and for the scene the screenshots in `demo/screens/legacy`. The demo command keeps backups: versions of the app saved from checked rehearsals. `./demo.sh backup new-law` puts the app as it is after the law change live in about two minutes, once Seb has saved that backup; `./demo.sh backup original` puts the original app back. A `backup modern` will follow when the modernisation stage is built. Each section will also have its recording (not made yet).
+The rule: never debug live. Say 'let me show you the one we ran earlier', and move on. Until recordings exist, the fallback for the proof after the new law is the screenshots in `demo/screens/joint-keepers`, and for the scene the screenshots in `demo/screens/legacy`. The demo command keeps backups: versions of the app saved from checked rehearsals. `./demo.sh backup new-law` puts the app as it is after the law change live in about two minutes, once the demo's owner has saved that backup; `./demo.sh backup original` puts the original app back. A `backup modern` will follow when the modernisation stage is built. Each section will also have its recording (not made yet).
 
 ## Shallow and Deep Tracks
 

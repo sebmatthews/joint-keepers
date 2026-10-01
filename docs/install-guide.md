@@ -6,7 +6,7 @@ Status: draft, 29 September 2026. Written for presenters setting up a Mac to run
 
 A Mac with an Apple silicon chip (M1 or later), an internet connection for the setup, and about half an hour. You do not need to be an engineer. Every command below is typed, or pasted, into the Terminal app exactly as shown.
 
-A GitHub account. GitHub is the website that holds the demo's code and does all of its building and checking. Seb adds your account to the demo, because during the demo you send the agent's change to GitHub to be built and checked. GitHub emails you an invitation; accept it.
+A GitHub account. GitHub is the website that holds the demo's code and does all of its building and checking. The demo's owner adds your account to the demo's repository, because during the demo you send the agent's change to GitHub to be built and checked. GitHub emails you an invitation; accept it.
 
 That is all. Your Mac does not build or check anything, and you do not need Windows or an Azure account: GitHub builds the old Windows app on its own machines, and puts it on Azure for the audience to click round.
 
@@ -33,7 +33,7 @@ Answer its questions: choose GitHub.com, then HTTPS, then yes to signing in to G
 
 Cosine CLI is the AI coding agent the audience watches.
 
-Not decided yet: which version of Cosine presenters use. Cosine has provided a MacBook with its own build, called `cos2`, which is the one the demo has been tested with so far. The public version, called `cos`, is described below. Until this is settled with Cosine, check with Seb before installing.
+Use the same version of Cosine that the demo was rehearsed with; the demo's owner tells you which. The public version, called `cos`, is described below.
 
 The public version installs with this command:
 
@@ -45,7 +45,7 @@ Confirmed: the install command and `cos login` (cosine.sh/docs/cli/install-and-a
 
 ## Step 4: Set Up the Model Cosine Uses
 
-Not decided yet. Every presenter must use exactly the same model setup that was used in rehearsal, or the rehearsal results mean little. Which setup that is will be written here once rehearsals start.
+Not decided yet. Every presenter must use exactly the same model setup that was used in rehearsal, or the rehearsal results mean little. The demo's owner tells you which setup that is.
 
 For reference, if the setup is a Claude subscription: Cosine can use a Claude Pro, Max, Team or Enterprise plan. You install Claude Code, run `claude` once and sign in, then start Cosine with `cos`, type `/model` and choose one of the 'Claude Subscription' models. Confirmed (cosine.sh/docs/cli/login-with-claude and code.claude.com/docs/en/setup, checked 27 September 2026).
 
@@ -53,9 +53,9 @@ For reference, if the setup is a Claude subscription: Cosine can use a Claude Pr
 
 In Terminal:
 
-    git clone https://github.com/sebmatthews/joint-keepers.git
+    git clone https://github.com/OWNER/joint-keepers.git
 
-This makes a folder called joint-keepers in your home folder. Whenever you run the demo, open Terminal and go into it first with `cd joint-keepers`.
+Replace OWNER with the GitHub account or organisation that holds the demo, as given to you by the demo's owner; if the repository has a different name, replace joint-keepers too. This makes a folder called joint-keepers in your home folder. Whenever you run the demo, open Terminal and go into it first with `cd joint-keepers`.
 
 ## Step 6: Check Everything Is Ready
 
@@ -67,7 +67,7 @@ It checks each of the steps above and says 'This Mac is ready', or names the ste
 
 ## If Something Goes Wrong
 
-Write down the exact message Terminal shows and send it to Seb. Do not try other commands you find online; the demo depends on every Mac being set up the same way.
+Write down the exact message Terminal shows and send it to the demo's owner. Do not try other commands you find online; the demo depends on every Mac being set up the same way.
 
 ## Where These Facts Come From
 

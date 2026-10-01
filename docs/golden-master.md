@@ -40,7 +40,7 @@ These go into the modernisation brief and AGENTS.md. The look of the screens is 
 
 ## What It Does Not Cover
 
-The legacy app has a validation rule copied into two pages with small differences, one of the planted flaws. The registration page trims spaces from a tag number but does not accept lower case. The movement page accepts lower case but does not trim spaces. No scenario exercises that difference, so the golden master will not notice if the modern app settles on one rule. Decided by Seb on 27 September 2026: this is left untested on purpose, and used as a talking point about the limits of any test, so that a sensible tidy-up by the agent cannot fail the check live.
+The legacy app has a validation rule copied into two pages with small differences, one of the planted flaws. The registration page trims spaces from a tag number but does not accept lower case. The movement page accepts lower case but does not trim spaces. No scenario exercises that difference, so the golden master will not notice if the modern app settles on one rule. Decided on 27 September 2026: this is left untested on purpose, and used as a talking point about the limits of any test, so that a sensible tidy-up by the agent cannot fail the check live.
 
 ## After the Law Change
 
@@ -50,7 +50,7 @@ The new-law stage changes the database's structure on purpose, through the migra
 2. Runs the twelve original scenarios and compares what the screen shows with the recorded golden results. The database is not compared, because its structure has changed by design. The animal page (scenario S04) is expected to change, because the law adds its keepers table, and it must then match the approved new-law result in `golden/results-new-law/S04.json` exactly; every other scenario must match the original results exactly.
 3. Runs the six scenarios for the law, J01 to J06, in `golden/scenarios-joint-keepers.json`, and compares each screen with its approved result in `golden/results-new-law`.
 
-The approved new-law results come from the build of the new-law backup (build 36566974237, 29 September 2026, on Cosine's passing run replayed onto main), checked by hand against the law document. They are also the standard the modernisation stage must match.
+The approved new-law results come from the build of the new-law backup (29 September 2026, on Cosine's passing run replayed onto main), checked by hand against the law document. They are also the standard the modernisation stage must match.
 
 Why the animal page is checked against an approved result: in the first rehearsal (29 September 2026), Cosine's change left the keepers table off the animal page. Accepting any change to that page let it through; only the add-a-keeper scenarios caught it.
 

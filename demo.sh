@@ -47,7 +47,7 @@ check_mac() {
       permission=$(gh repo view --json viewerPermission --jq .viewerPermission 2>/dev/null)
       case "$permission" in
         WRITE|MAINTAIN|ADMIN) ok "You can send changes to the demo on GitHub" ;;
-        *) bad "Your GitHub account cannot send changes to the demo yet: accept Seb's invitation, or ask him for one"; problems=1 ;;
+        *) bad "Your GitHub account cannot send changes to the demo yet: accept the invitation from the demo's owner, or ask them for one"; problems=1 ;;
       esac
     else
       bad "Not signed in to GitHub: run 'gh auth login' (install guide, step 2)"; problems=1
@@ -85,7 +85,7 @@ start_workflow() { # workflow branch [extra gh arguments]
 # The build a push started by itself, if there is one, for this commit.
 run_for_commit() { # branch sha
   local id _
-  for _ in $(seq 1 10); do
+  for _ in $(seq 1 20); do
     sleep 3
     id=$(gh run list --workflow "$LEGACY_WORKFLOW" --branch "$1" --commit "$2" --limit 1 \
            --json databaseId --jq '.[0].databaseId // empty' 2>/dev/null)
@@ -110,7 +110,7 @@ azure() { # start|stop
   local id
   say "Asking GitHub to $1 the app on Azure"
   id=$(start_workflow "$AZURE_WORKFLOW" main -f action="$1") || exit 1
-  follow_run "$id" || fail "the Azure $1 did not work. Tell Seb."
+  follow_run "$id" || fail "the Azure $1 did not work. Tell the demo's owner."
 }
 
 # Builds only put the app on Azure if it is running; start it if it is not answering.
@@ -127,15 +127,15 @@ build() { # branch description
   local id
   say "Building $2 on GitHub (about two minutes)"
   id=$(start_workflow "$LEGACY_WORKFLOW" "$1") || exit 1
-  follow_run "$id" || fail "the build of $2 failed. Tell Seb."
-  deployed_in "$id" || fail "the build of $2 passed but did not reach Azure. Tell Seb."
+  follow_run "$id" || fail "the build of $2 failed. Tell the demo's owner."
+  deployed_in "$id" || fail "the build of $2 passed but did not reach Azure. Tell the demo's owner."
 }
 
 set_aside_changes() { # command-name
   if [ -n "$(git status --porcelain)" ]; then
     git stash push --include-untracked -m "Set aside by $SCRIPT_NAME $1 on $(date '+%d/%m/%Y %H:%M')" >/dev/null \
       || fail "could not set aside changes left from an earlier run."
-    ok "Changes left from an earlier run were set aside (Seb can get them back with 'git stash list')"
+    ok "Changes left from an earlier run were set aside (they can be got back with 'git stash list')"
   fi
 }
 
@@ -192,7 +192,7 @@ cmd_publish() {
       say "All checks passed and the changed app is on Azure. Open an animal and add a second keeper."
       return 0
     fi
-    say "All checks passed, but the changed app did not reach Azure (tell Seb afterwards). Show the screenshots instead."
+    say "All checks passed, but the changed app did not reach Azure (tell the demo's owner afterwards). Show the screenshots instead."
   else
     say "The build did not pass. Say 'let me show you the one we ran earlier'. Opening the screenshots."
   fi
@@ -210,15 +210,15 @@ cmd_backup() {
     new-law)  tag=checkpoint/new-law ;;
     *) fail "say which backup: './$SCRIPT_NAME backup original' or './$SCRIPT_NAME backup new-law'." ;;
   esac
-  git fetch -q --force origin "refs/tags/$tag:refs/tags/$tag" 2>/dev/null || fail "the '$name' backup has not been saved yet. Tell Seb."
+  git fetch -q --force origin "refs/tags/$tag:refs/tags/$tag" 2>/dev/null || fail "the '$name' backup has not been saved yet. Tell the demo's owner."
   sha=$(git rev-parse "refs/tags/$tag^{commit}") || fail "the '$name' backup could not be read."
   make_sure_app_is_running
   branch="demo/backup-$name-$(stamp)"
   git push -q origin "$sha:refs/heads/$branch" || fail "could not send the backup to GitHub."
   say "Building the '$name' backup on GitHub (about two minutes)"
   id=$(run_for_commit "$branch" "$sha") || id=$(start_workflow "$LEGACY_WORKFLOW" "$branch") || exit 1
-  follow_run "$id" || fail "the backup build failed. Tell Seb."
-  deployed_in "$id" || fail "the backup build passed but did not reach Azure. Tell Seb."
+  follow_run "$id" || fail "the backup build failed. Tell the demo's owner."
+  deployed_in "$id" || fail "the backup build passed but did not reach Azure. Tell the demo's owner."
   say "The '$name' backup is live."
 }
 

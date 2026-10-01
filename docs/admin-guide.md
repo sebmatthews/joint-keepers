@@ -1,13 +1,13 @@
 # Admin Guide
 
-Status: draft, 29 September 2026. For Seb: the one-off and occasional steps behind the demo, which presenters never do. Presenters follow the install guide and the demo guide only.
+Status: draft, 29 September 2026. For the demo's owner: the one-off and occasional steps behind the demo, which presenters never do. Presenters follow the install guide and the demo guide only.
 
 ## Put the Workflows in Place
 
 The demo command, `demo.sh`, sits at the top of the repository and must stay executable, which Git records; presenters get it when they download the demo.
 
 
-The build workflows live in `.github/workflows`. Cowork sessions can write there by moving a file in with the shell on the Mac, though not with their file-copying tool; they then commit it. A workflow started by the demo command must be on main on GitHub before it can be started on any branch, so push after any workflow change.
+The build workflows live in `.github/workflows`. A workflow started by the demo command must be on main on GitHub before it can be started on any branch, so push after any workflow change.
 
 ## Let GitHub Start and Stop the Azure App
 
@@ -44,17 +44,18 @@ Presenters need nothing on Azure.
 
 `./demo.sh backup new-law` puts the app as it is after the law change live, from a Git tag named `checkpoint/new-law`. The tag does not exist until you choose which run is the reference. `./demo.sh backup original` needs no tag: it builds main.
 
-A backup builds with the workflow as it is in the tagged commit, so the tagged commit must sit on top of the current main, not on the branch Cosine's run was made on. To make it from Cosine's passing run (4236345, on try/cosine-2), replay that change onto main and tag the result:
+A backup builds with the workflow as it is in the tagged commit, so the tagged commit must sit on top of the current main. Make it from a rehearsal whose `./demo.sh publish` passed: each rehearsal leaves a branch named `demo/live-...` on GitHub, and the commits on it that are not on main are Cosine's change. Replay them onto main and tag the result, replacing BRANCH with the rehearsal's branch name:
 
+    git fetch origin
     git switch main
     git pull
     git switch -c checkpoint-new-law
-    git cherry-pick 4236345
+    git cherry-pick origin/main..origin/BRANCH
     git tag checkpoint/new-law
     git push origin checkpoint/new-law
     git switch main
 
-If the workflows or the demo command change later, save the backup again the same way, moving the tag with `git tag -f checkpoint/new-law` and `git push -f origin checkpoint/new-law`. Pushing the tag starts one extra build, which checks but does not deploy; that is expected.
+If the workflows or the demo command change later, save the backup again the same way, deleting the local branch first with `git branch -D checkpoint-new-law`, and moving the tag with `git tag -f checkpoint/new-law` and `git push -f origin checkpoint/new-law`. Pushing the tag starts one extra build, which checks but does not deploy; that is expected.
 
 The approved new-law results in `golden/results-new-law` were taken from the backup's build on 29 September 2026. If the law document changes, record them again from a hand-checked build of the new backup, and commit them.
 

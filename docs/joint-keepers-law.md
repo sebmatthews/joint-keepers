@@ -1,6 +1,6 @@
 # The Joint Keepers Change
 
-Status: agreed with Seb, 27 September 2026, including every item marked 'Decision'.
+Status: agreed 27 September 2026, including every item marked 'Decision'.
 
 This is the single source for the legislative change in the new-law stage. The new-law brief, `prompts/new-law.md`, points at it, the golden master scenarios for the change are written from it, and the demo presents Part A to the audience. Part A is fictional law. Part B is what the service must do to comply.
 

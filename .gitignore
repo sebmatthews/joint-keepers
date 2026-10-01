@@ -5,5 +5,5 @@ build/
 legacy/RegisterLivestock/Bin/
 legacy/RegisterLivestock/App_Data/*.db
 
-# Local notes for our Claude sessions on the Mac mini; not for other agents or users
+# Local notes for a maintainer's own AI coding sessions; not shared with other agents or users
 CLAUDE.md

@@ -37,6 +37,7 @@ jobs:
           [ "$HAS_CREDENTIALS" = "true" ] || missing="$missing AZURE_CREDENTIALS(secret)"
           [ -n "$AZURE_WEBAPP_NAME" ] || missing="$missing AZURE_WEBAPP_NAME"
           [ -n "$AZURE_RESOURCE_GROUP" ] || missing="$missing AZURE_RESOURCE_GROUP"
+          [ -n "$AZURE_WEBAPP_URL" ] || missing="$missing AZURE_WEBAPP_URL"
           if [ -n "$missing" ]; then
             echo "::error::Missing:$missing. See docs/admin-guide.md."
             exit 1
