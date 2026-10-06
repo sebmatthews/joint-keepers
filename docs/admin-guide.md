@@ -1,6 +1,6 @@
 # Admin Guide
 
-Status: draft, 29 September 2026. For the demo's owner: the one-off and occasional steps behind the demo, which presenters never do. Presenters follow the install guide and the demo guide only.
+For the demo's owner: the one-off and occasional steps behind the demo, which presenters never do. Presenters follow the install guide and the demo guide only.
 
 ## Put the Workflows in Place
 

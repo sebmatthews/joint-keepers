@@ -1,6 +1,6 @@
 # Azure Setup for the Hosted Legacy App
 
-Status: trial, 27 September 2026. This puts the legacy app on Azure App Service's free tier so an audience can click round it, and tests whether that works. The demo's owner does these steps; the workflow does the rest. Portal steps checked against Microsoft's documentation on 27 September 2026; the portal changes often, so labels may differ slightly.
+This puts the legacy app on Azure App Service's free tier so an audience can click round it. The demo's owner does these steps; the workflow does the rest. Portal steps checked against Microsoft's documentation on 27 September 2026; the portal changes often, so labels may differ slightly.
 
 ## 1. Create the Web App
 
